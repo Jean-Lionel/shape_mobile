@@ -1,9 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:shapp/config/config.dart';
+import 'package:shapp/config/routes/routes.dart';
+import 'package:shapp/config/shared_preference/shared_preference_data.dart';
 import 'package:shapp/screens/_lib.dart';
 import 'package:shapp/utils/utils.dart';
 import 'package:shapp/widgets/_lib.dart';
+import 'package:http/http.dart' as http;
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -14,6 +20,42 @@ class Register extends StatefulWidget {
 
 class _RegisterState extends State<Register> {
   final _formKey = GlobalKey<FormState>();
+  TextEditingController prenomController = TextEditingController();
+  TextEditingController nomController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController usernameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  void saveUserInput() async {
+    if (_formKey.currentState!.validate()) {
+      // If the form is valid, display a snackbar. In the real world,
+      // you'd often call a server or save the information in a database.
+
+      var reqBody = {
+        "prenom": prenomController.text,
+        "nom": nomController.text,
+        "adresseMail": emailController.text,
+        "codePays": "+1", // UserSimplePeference.getCountryCode(),
+        "telephone":
+            "6892674454", // UserSimplePeference.getRegisterPhoneNumber(),
+        "username": usernameController.text,
+        "password": passwordController.text
+      };
+
+      // print(reqBody);
+
+      try {
+        final response = await postData(REGISTER_USER, reqBody);
+        String result = response.body as String;
+        print("Repson ===============: ");
+        print(result);
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Error : Error")),
+        );
+      }
+    }
+  }
 
   bool phoneNumberVerified = false;
   @override
@@ -61,13 +103,25 @@ class _RegisterState extends State<Register> {
                                 const Divider(),
                                 const SizedBox(height: 16.0),
                                 TextFormField(
-                                  decoration: defaultDecoration("Prénom"),
-                                ),
+                                    controller: prenomController,
+                                    decoration: defaultDecoration("Prénom"),
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Please Entre le nom';
+                                      }
+                                      return null;
+                                    }),
                                 const SizedBox(height: 10.0),
                                 TextFormField(
-                                  decoration:
-                                      defaultDecoration("Nom de famille"),
-                                ),
+                                    controller: nomController,
+                                    decoration:
+                                        defaultDecoration("Nom de famille"),
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Please Entre le Prenom';
+                                      }
+                                      return null;
+                                    }),
                                 const SizedBox(height: 10.0),
                                 TextFormField(
                                   decoration:
@@ -75,24 +129,32 @@ class _RegisterState extends State<Register> {
                                 ),
                                 const SizedBox(height: 10.0),
                                 TextFormField(
-                                  decoration:
-                                      defaultDecoration("Nom d'utilisateur"),
-                                ),
+                                    controller: usernameController,
+                                    decoration:
+                                        defaultDecoration("Nom d'utilisateur"),
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return "Le nom d'utilisateur est obligatoire";
+                                      }
+                                      return null;
+                                    }),
                                 const SizedBox(height: 10.0),
                                 TextFormField(
-                                  obscureText: true,
-                                  keyboardType: TextInputType.visiblePassword,
-                                  decoration: defaultDecoration("Mot de passe"),
-                                ),
+                                    obscureText: true,
+                                    keyboardType: TextInputType.visiblePassword,
+                                    decoration:
+                                        defaultDecoration("Mot de passe"),
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return "Le mot de passe est obligatoire";
+                                      }
+                                      return null;
+                                    }),
                                 const SizedBox(height: 10.0),
                                 Button(
                                   label: 'Register',
                                   onTap: () {
-                                    Navigator.of(context).pushAndRemoveUntil(
-                                        MaterialPageRoute(
-                                            builder: (_) =>
-                                                const HomeScreensPageView()),
-                                        (route) => false);
+                                    saveUserInput();
                                   },
                                 ),
                               ] else
@@ -168,7 +230,8 @@ class _VerifyPhoneNumberState extends State<VerifyPhoneNumber> {
         children: [
           const SizedBox(height: 16.0),
           if (!otpSent) ...[
-            DropdownButtonFormField(isExpanded: true,
+            DropdownButtonFormField(
+              isExpanded: true,
               decoration: defaultDecoration('Choisissez votre pays'),
               items: countries
                   .map((e) => DropdownMenuItem(
