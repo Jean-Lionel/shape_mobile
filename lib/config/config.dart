@@ -6,14 +6,18 @@ import 'package:shapp/config/shared_preference/shared_preference_data.dart';
 const appName = "Shapp";
 const baseUrl = "https://........./";
 
-Future<http.Response> postData(var url, dynamic data) async {
+Future<http.Response> postData({
+  var url,
+  dynamic data,
+  String contentType = "application/json",
+}) async {
   String token = UserSimplePeference.getToken();
   try {
     final response = await http.post(
       url,
       headers: {
         "content-type": "application/json",
-        "Accept": "application/json",
+        "Accept": contentType, // "application/json",
         //  'Authorization': 'Bearer $token',
       },
       body: jsonEncode(data),
@@ -23,4 +27,10 @@ Future<http.Response> postData(var url, dynamic data) async {
     print(e);
     throw FormatException('Expected at least 1 section');
   }
+}
+
+void displayMessage(m) {
+  print("===================================");
+  print(m);
+  print("===================================");
 }

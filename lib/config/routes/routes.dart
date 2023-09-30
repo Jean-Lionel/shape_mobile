@@ -9,4 +9,5 @@ Uri makeUrl(String url) {
 const requestHeaders = {};
 
 final LOGIN_URL = makeUrl("login");
+final SEND_OTP = makeUrl("sendotp");
 final REGISTER_USER = makeUrl("user/register");

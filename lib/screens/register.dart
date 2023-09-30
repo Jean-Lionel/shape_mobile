@@ -45,9 +45,12 @@ class _RegisterState extends State<Register> {
       // print(reqBody);
 
       try {
-        final response = await postData(REGISTER_USER, reqBody);
+        final response = await postData(
+          url: REGISTER_USER,
+          data: reqBody,
+        );
         String result = response.body as String;
-        print("Repson ===============: ");
+        print("Response ===============: ");
         print(result);
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -218,7 +221,32 @@ class VerifyPhoneNumber extends StatefulWidget {
 class _VerifyPhoneNumberState extends State<VerifyPhoneNumber> {
   final _formKey = GlobalKey<FormState>();
   Map? currentCountry;
+  TextEditingController phoneNumberController = new TextEditingController();
   bool otpSent = false;
+
+  void sendOTP() async {
+    print(currentCountry);
+    print(phoneNumberController.text);
+
+    var reqBody = {
+      "phone": "${currentCountry?['code']}${phoneNumberController.text}"
+    };
+    print(reqBody);
+
+    final response = await http.post(SEND_OTP,
+        headers: {
+          'Content-Type': "application/x-www-form-urlencoded",
+        },
+        body: reqBody);
+    if (response.statusCode == 200) {
+      setState(() {
+        otpSent = true;
+      });
+    } else {}
+    print("STATUS CODE: ${response.statusCode}");
+    print(response.statusCode);
+  }
+
   @override
   Widget build(BuildContext context) {
     final cardColor = Theme.of(context).cardColor;
@@ -247,6 +275,13 @@ class _VerifyPhoneNumberState extends State<VerifyPhoneNumber> {
             ),
             const SizedBox(height: 10.0),
             TextFormField(
+              controller: phoneNumberController,
+              validator: (value) {
+                if (value == null) {
+                  return "Le champs doit être rempli";
+                }
+                return null;
+              },
               keyboardType: TextInputType.phone,
               decoration: defaultDecoration("Numéro de Téléphone").copyWith(
                 prefixText: '${currentCountry?['code'] ?? ''} ',
@@ -254,11 +289,9 @@ class _VerifyPhoneNumberState extends State<VerifyPhoneNumber> {
             ),
             const SizedBox(height: 10.0),
             Button(
-              label: 'Vérifier',
+              label: "Envoyer OTP",
               onTap: () {
-                setState(() {
-                  otpSent = true;
-                });
+                sendOTP();
               },
             ),
           ] else ...[

@@ -19,6 +19,12 @@ final countries = [
     "unit": "RW",
     "code": "+250",
   },
+  {
+    "id": 4,
+    "name": "USA",
+    "unit": "USA",
+    "code": "+1",
+  },
 ];
 
 InputDecoration defaultDecoration(String labelText) => InputDecoration(
@@ -49,4 +55,3 @@ String? stringValidator(context,
 String simpleCapitalize(String w) => w.isEmpty
     ? ''
     : w.trim()[0].toUpperCase() + w.trim().substring(1).toLowerCase();
-
