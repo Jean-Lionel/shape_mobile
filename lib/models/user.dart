@@ -1,6 +1,11 @@
 class User {
+  String? nom;
+  String? prenom;
+  String? adresseMail;
+  String? telephone;
   String? username;
   String? password;
+
   String? access_token;
   String? quantite_credit;
   String? quantite_evenement;

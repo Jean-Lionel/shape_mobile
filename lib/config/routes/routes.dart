@@ -8,4 +8,4 @@ Uri makeUrl(String url) {
 
 const requestHeaders = {};
 
-final LOGIN_URL = makeUrl("login/");
+final LOGIN_URL = makeUrl("login");

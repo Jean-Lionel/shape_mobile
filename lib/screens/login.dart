@@ -56,20 +56,18 @@ class _LoginState extends State<Login> {
         },
         body: jsonEncode(reqBody),
       );
-
-      var jsonResponse = jsonDecode(response.body);
-
-      if (jsonResponse["success"]) {
-        String token = jsonResponse["token"];
+      print("================================================");
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(response.body);
+        String token = jsonResponse["access_token"];
         print("token : $token");
-        var user = jsonResponse["user"];
-        User x = User.fromJson(user);
-        var json = x.toJson();
-        await UserSimplePeference.setUserName(x.username!);
         prefs.setString('token', token);
-        prefs.setString('user', jsonEncode(json));
+        prefs.setString('user', jsonEncode(jsonResponse));
         // Navigator.of(context).popAndPushNamed(HomeScreen.routeName);
+        Navigator.of(context).popAndPushNamed(Home.routeName);
       }
+      print("================================================");
     } else {
       Navigator.of(context).popAndPushNamed(Home.routeName);
     }

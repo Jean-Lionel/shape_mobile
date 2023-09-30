@@ -28,6 +28,10 @@ class MyApp extends StatelessWidget {
       initialRoute: (token != null && token!.isNotEmpty)
           ? Home.routeName
           : Login.routeName,
+      routes: {
+        Home.routeName: (_) => Home(),
+        Login.routeName: (_) => Login(),
+      },
     );
   }
 }
