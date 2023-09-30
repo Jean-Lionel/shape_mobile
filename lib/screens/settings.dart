@@ -4,6 +4,10 @@ import 'package:shapp/screens/_lib.dart';
 class Settings extends StatelessWidget {
   const Settings({super.key});
 
+  void logOUtConnetedUser(contxt) {
+    Navigator.of(contxt).pushReplacementNamed(Login.routeName);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -109,7 +113,9 @@ class Settings extends StatelessWidget {
                     context,
                     "Déconnexion",
                     Icons.logout,
-                    () {},
+                    () {
+                      logOUtConnetedUser(context);
+                    },
                   ),
                 ],
               ),

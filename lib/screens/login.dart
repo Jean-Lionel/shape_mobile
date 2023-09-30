@@ -48,28 +48,31 @@ class _LoginState extends State<Login> {
         "password": pass // "password",
       };
 
-      final response = await http.post(
-        LOGIN_URL,
-        headers: {
-          "content-type": "application/json",
-          "Accept": "application/json"
-        },
-        body: jsonEncode(reqBody),
-      );
-      print("================================================");
-      print(response.statusCode);
-      if (response.statusCode == 200) {
-        var jsonResponse = jsonDecode(response.body);
-        String token = jsonResponse["access_token"];
-        print("token : $token");
-        prefs.setString('token', token);
-        prefs.setString('user', jsonEncode(jsonResponse));
-        // Navigator.of(context).popAndPushNamed(HomeScreen.routeName);
-        Navigator.of(context).popAndPushNamed(Home.routeName);
+      try {
+        final response = await http.post(
+          LOGIN_URL,
+          headers: {
+            "content-type": "application/json",
+            "Accept": "application/json"
+          },
+          body: jsonEncode(reqBody),
+        );
+        if (response.statusCode == 200) {
+          var jsonResponse = jsonDecode(response.body);
+          String token = jsonResponse["access_token"];
+          print("token : $token");
+          prefs.setString('token', token);
+          prefs.setString('user', jsonEncode(jsonResponse));
+          // Navigator.of(context).popAndPushNamed(HomeScreen.routeName);
+          Navigator.of(context).popAndPushNamed(HomeScreensPageView.routeName);
+        }
+      } catch (e) {
+        print(e);
       }
+
       print("================================================");
     } else {
-      Navigator.of(context).popAndPushNamed(Home.routeName);
+      Navigator.of(context).popAndPushNamed(Login.routeName);
     }
   }
 
