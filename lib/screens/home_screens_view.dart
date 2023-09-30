@@ -3,6 +3,7 @@ import 'package:shapp/config/config.dart';
 import 'package:shapp/screens/_lib.dart';
 
 class HomeScreensPageView extends StatefulWidget {
+  static const String routeName = "/hom_screens";
   const HomeScreensPageView({super.key});
 
   @override

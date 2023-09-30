@@ -26,10 +26,10 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       home: const Splash(),
       initialRoute: (token != null && token!.isNotEmpty)
-          ? Home.routeName
+          ? HomeScreensPageView.routeName
           : Login.routeName,
       routes: {
-        Home.routeName: (_) => Home(),
+        HomeScreensPageView.routeName: (_) => HomeScreensPageView(),
         Login.routeName: (_) => Login(),
       },
     );
