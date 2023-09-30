@@ -4,6 +4,7 @@ import 'package:shapp/config/config.dart';
 import 'package:shapp/screens/_lib.dart';
 
 class Home extends StatefulWidget {
+  static const String routeName = "/home";
   const Home({super.key});
 
   @override
