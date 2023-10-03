@@ -14,5 +14,5 @@ final REGISTER_USER = makeUrl("user/register");
 final USER_PROFILE = makeUrl("user/profile");
 final EVENEMENT_PROFILE = makeUrl("evenement/profile");
 final CREDIT_QUANTITE = makeUrl("credit/profile");
-final CREDIT_SMS_PROFILE = makeUrl("/credit/sms/profile");
+final CREDIT_SMS_PROFILE = makeUrl("credit/sms/profile");
 final VERIFY_OTP = makeUrl("verifyotp");

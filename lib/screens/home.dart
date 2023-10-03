@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:shapp/config/config.dart';
-import 'package:shapp/models/userProfile.dart';
 import 'package:shapp/screens/_lib.dart';
 
 import '../config/provider/homePageProvider.dart';
@@ -14,6 +13,8 @@ class Home extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final _dataEvent = ref.refresh(eventResult);
+    final _dataCredit = ref.refresh(quantiteCredit);
+    final _dataSMS = ref.refresh(credit_sms);
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -76,18 +77,24 @@ class Home extends ConsumerWidget {
                               Row(
                                 children: [
                                   Expanded(
-                                    child: Text(
-                                      NumberFormat.compact(locale: 'en_US')
-                                          .format(double.tryParse('45.0')),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headlineMedium!
-                                          .copyWith(
-                                            fontWeight: FontWeight.w800,
-                                            color: Colors.white,
-                                          ),
-                                    ),
-                                  ),
+                                      child: _dataCredit.when(
+                                          data: (el) {
+                                            return Text(
+                                              NumberFormat.compact(
+                                                      locale: 'en_US')
+                                                  .format(
+                                                      double.tryParse('$el')),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headlineMedium!
+                                                  .copyWith(
+                                                    fontWeight: FontWeight.w800,
+                                                    color: Colors.white,
+                                                  ),
+                                            );
+                                          },
+                                          error: (e, t) => Text("$e"),
+                                          loading: () => Text("Loading..."))),
                                   CircleAvatar(
                                     child: IconButton(
                                       onPressed: () {
@@ -220,18 +227,25 @@ class Home extends ConsumerWidget {
                               Row(
                                 children: [
                                   Expanded(
-                                    child: Text(
-                                      NumberFormat.compact(locale: 'en_US')
-                                          .format(double.tryParse('0')),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headlineMedium!
-                                          .copyWith(
-                                            fontWeight: FontWeight.w800,
-                                            color:
-                                                Theme.of(context).primaryColor,
-                                          ),
-                                    ),
+                                    child: _dataSMS.when(
+                                        data: (e) {
+                                          print("LA VALEUR DE E $e ");
+                                          return Text(
+                                            NumberFormat.compact(
+                                                    locale: 'en_US')
+                                                .format(double.tryParse('$e')),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headlineMedium!
+                                                .copyWith(
+                                                  fontWeight: FontWeight.w800,
+                                                  color: Theme.of(context)
+                                                      .primaryColor,
+                                                ),
+                                          );
+                                        },
+                                        error: (item, error) => Text("$item"),
+                                        loading: () => Text("Loading...")),
                                   ),
                                   CircleAvatar(
                                     child: IconButton(
