@@ -18,7 +18,7 @@ Future<http.Response> postData({
       headers: {
         "content-type": "application/json",
         "Accept": contentType, // "application/json",
-        //  'Authorization': 'Bearer $token',
+        'Authorization': 'Bearer $token',
       },
       body: jsonEncode(data),
     );

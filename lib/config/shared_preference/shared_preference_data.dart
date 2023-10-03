@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserSimplePeference {
@@ -7,11 +9,15 @@ class UserSimplePeference {
   static const String _token = "token";
   static const String _codePay = "+243";
   static const String _registerPhoneNumber = "992135899";
+  static const String _user_profile = "_user_profile";
 
   static Future init() async => prefs = await SharedPreferences.getInstance();
 
   static Future setUserName(String userName) async =>
       await prefs.setString(_keyUserName, userName);
+  static Future setUserProfile(String userProfile) async =>
+      await prefs.setString(_user_profile, userProfile);
+
   static Future setUserEmail(String email) async =>
       await prefs.setString(_keyEmail, email);
 
@@ -23,10 +29,15 @@ class UserSimplePeference {
 
   static String getRegisterPhoneNumber() =>
       prefs.getString(_registerPhoneNumber) ?? "";
+  static String getUserProfile() => prefs.getString(_user_profile) ?? "";
   static String getCountryCode() => prefs.getString(_codePay) ?? "";
   static String getUserName() => prefs.getString(_keyUserName) ?? "";
   static String getEmail() => prefs.getString(_keyEmail) ?? "";
   static String getToken() => prefs.getString(_token) ?? "";
+
+  static String getAuthUserId() {
+    return prefs.getString("user_id") ?? "";
+  }
 
   static void lougoutUser() {
     prefs.remove(_keyUserName);

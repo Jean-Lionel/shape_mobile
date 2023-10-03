@@ -39,9 +39,30 @@ class User {
     return data;
   }
 
-  Future<Response> userProfile() async {
+  static Future<String> userProfile() async {
     final response = await getData(url: USER_PROFILE);
-    // print(response.body);
-    return response;
+    // var x = {
+    //   "id": 2,
+    //   "nom": "TCHEUSI",
+    //   "prenom": "Lisa",
+    //   "telephone": "+16892674454",
+    //   "adresseMail": "lz@shappu.com",
+    //   "typeCompte": "Standard",
+    //   "idAgent": 0,
+    //   "codePays": "+1",
+    //   "genre": null,
+    //   "dateNaissance": null,
+    //   "photoProfil": null,
+    //   "statut": "VALIDE",
+    //   "username": "liza",
+    //   "roles": "USER",
+    //   "appRoles": [
+    //     {"id": 1, "roleName": "USER"}
+    //   ],
+    //   "dateModification": null,
+    //   "dateCreation": "2023-09-30T15:02:01.6661"
+    // };
+
+    return response.body;
   }
 }

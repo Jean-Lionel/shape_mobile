@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shapp/models/userProfile.dart';
 import 'package:shapp/utils/utils.dart';
 import 'package:shapp/widgets/_lib.dart';
 
@@ -33,6 +34,13 @@ class _BuyCreditState extends State<BuyCredit> {
   Map? currentPM;
   double price = 0.0;
 
+  TextEditingController transactionController = new TextEditingController();
+
+  void saveInformations() {
+    UserProfile.saveCredit(
+        transactionController.text, currentPM!["name"], price);
+  }
+
   @override
   Widget build(BuildContext context) {
     return FormModel(
@@ -41,7 +49,8 @@ class _BuyCreditState extends State<BuyCredit> {
         key: _formKey,
         child: Column(
           children: [
-            DropdownButtonFormField(isExpanded: true,
+            DropdownButtonFormField(
+              isExpanded: true,
               decoration: defaultDecoration("Methode de paiment"),
               items: payoutMethods
                   .map((e) => DropdownMenuItem(
@@ -90,11 +99,20 @@ class _BuyCreditState extends State<BuyCredit> {
                   defaultDecoration("Numéro de la transaction").copyWith(
                 helperText: "Le numéro de la transaction après retrait",
               ),
+              onChanged: (value) {
+                if (double.tryParse(value) != null) {
+                  setState(() {
+                    transactionController.text = value;
+                  });
+                }
+              },
             ),
             const SizedBox(height: 20.0),
             Button(
               label: 'Acheter',
-              onTap: () {},
+              onTap: () {
+                saveInformations();
+              },
             ),
           ],
         ),
