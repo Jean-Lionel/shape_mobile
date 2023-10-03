@@ -2,8 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:shapp/config/shared_preference/shared_preference_data.dart';
-import 'package:shapp/models/user.dart';
+
 import 'package:shapp/screens/_lib.dart';
 import 'package:shapp/utils/utils.dart';
 import 'package:shapp/widgets/_lib.dart';
@@ -29,8 +28,8 @@ class _LoginState extends State<Login> {
   void initState() {
     super.initState();
     initSharedPreferences();
-    _emailController.text = "admin";
-    _passwordController.text = "1894";
+    _emailController.text = "liza";
+    _passwordController.text = "12345";
   }
 
   void initSharedPreferences() async {
@@ -66,11 +65,12 @@ class _LoginState extends State<Login> {
           // Navigator.of(context).popAndPushNamed(HomeScreen.routeName);
           Navigator.of(context).popAndPushNamed(HomeScreensPageView.routeName);
         }
+
+        print("================================================");
+        print(response.body);
       } catch (e) {
         print(e);
       }
-
-      print("================================================");
     } else {
       Navigator.of(context).popAndPushNamed(Login.routeName);
     }

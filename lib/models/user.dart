@@ -1,3 +1,7 @@
+import 'package:http/http.dart';
+import 'package:shapp/config/config.dart';
+import 'package:shapp/config/routes/routes.dart';
+
 class User {
   String? nom;
   String? prenom;
@@ -33,5 +37,11 @@ class User {
     data['username'] = this.username;
     data['id'] = this.id;
     return data;
+  }
+
+  Future<Response> userProfile() async {
+    final response = await getData(url: USER_PROFILE);
+    // print(response.body);
+    return response;
   }
 }

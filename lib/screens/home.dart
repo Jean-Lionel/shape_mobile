@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:shapp/config/config.dart';
+import 'package:shapp/models/userProfile.dart';
 import 'package:shapp/screens/_lib.dart';
 
-class Home extends StatefulWidget {
+import '../config/provider/homePageProvider.dart';
+
+class Home extends ConsumerWidget {
   static const String routeName = "/home";
-  const Home({super.key});
+  //const Home({super.key});
 
   @override
-  State<Home> createState() => _HomeState();
-}
-
-class _HomeState extends State<Home> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
+    final _dataEvent = ref.refresh(eventResult);
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -78,7 +78,7 @@ class _HomeState extends State<Home> {
                                   Expanded(
                                     child: Text(
                                       NumberFormat.compact(locale: 'en_US')
-                                          .format(double.tryParse('0')),
+                                          .format(double.tryParse('45.0')),
                                       style: Theme.of(context)
                                           .textTheme
                                           .headlineMedium!
@@ -142,19 +142,26 @@ class _HomeState extends State<Home> {
                               Row(
                                 children: [
                                   Expanded(
-                                    child: Text(
-                                      NumberFormat.compact(locale: 'en_US')
-                                          .format(double.tryParse('0')),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headlineMedium!
-                                          .copyWith(
-                                            fontWeight: FontWeight.w800,
-                                            color:
-                                                Theme.of(context).primaryColor,
-                                          ),
-                                    ),
-                                  ),
+                                      child: _dataEvent.when(
+                                          data: (e) {
+                                            return Text(
+                                              NumberFormat.compact(
+                                                      locale: 'en_US')
+                                                  .format(
+                                                      double.tryParse("$e")),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headlineMedium!
+                                                  .copyWith(
+                                                    fontWeight: FontWeight.w800,
+                                                    color: Theme.of(context)
+                                                        .primaryColor,
+                                                  ),
+                                            );
+                                          },
+                                          error: (err, s) =>
+                                              Text(err.toString()),
+                                          loading: () => Text('Loading....'))),
                                   CircleAvatar(
                                     child: IconButton(
                                       onPressed: () {

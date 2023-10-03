@@ -14,13 +14,13 @@ class _HomeScreensPageViewState extends State<HomeScreensPageView> {
   bool isTheAppInitialized = false;
   bool? isThisTheFirstTime;
   int currentPageIndex = 0;
-  Widget currentWidget = const Home();
+  Widget currentWidget = Home();
   final PageStorageBucket pageStorageBucket = PageStorageBucket();
 
   final screens = [
     {
       'icon': Icons.dashboard,
-      'widget': const Home(),
+      'widget': Home(),
     },
     {
       'icon': Icons.settings,
