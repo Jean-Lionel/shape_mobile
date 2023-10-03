@@ -8,8 +8,25 @@ class UserProfile {
     final response = await getData(url: EVENEMENT_PROFILE);
     if (response.statusCode >= 200 && response.statusCode < 300) {
       var rep = jsonDecode(response.body);
-      //print(rep["quantite_evenement"]);
       return rep["quantite_evenement"];
+    }
+    return "";
+  }
+
+  Future<String> credit_sms() async {
+    final response = await getData(url: CREDIT_SMS_PROFILE);
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      var rep = jsonDecode(response.body);
+      return rep["quantite_credit_sms"];
+    }
+    return "";
+  }
+
+  Future<String> quantiteCredit() async {
+    final response = await getData(url: CREDIT_QUANTITE);
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      var rep = jsonDecode(response.body);
+      return rep["quantite_credit"];
     }
     return "";
   }
