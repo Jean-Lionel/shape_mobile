@@ -36,9 +36,22 @@ class _BuyCreditState extends State<BuyCredit> {
 
   TextEditingController transactionController = new TextEditingController();
 
-  void saveInformations() {
-    UserProfile.saveCredit(
+  void saveInformations() async {
+    final resp = await UserProfile.saveCredit(
         transactionController.text, currentPM!["name"], price);
+
+    if (resp != null) {
+      final snackBar = SnackBar(
+        content: Text(resp),
+        action: SnackBarAction(
+          label: 'Ok',
+          onPressed: () {
+            // Some code to undo the change.
+          },
+        ),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
   }
 
   @override

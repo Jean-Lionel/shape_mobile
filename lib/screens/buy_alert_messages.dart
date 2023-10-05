@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shapp/models/userProfile.dart';
 import 'package:shapp/utils/utils.dart';
 import 'package:shapp/widgets/_lib.dart';
 
@@ -32,6 +33,14 @@ class _BuyAlertMessagesState extends State<BuyAlertMessages> {
 
   Map? currentPM;
   double price = 0.0;
+  TextEditingController transactionController = new TextEditingController();
+
+  void saveBuyMessage() async {
+    final resp = await UserProfile.saveMessage(
+        transactionController.text, currentPM!["name"], price);
+    print("================================");
+    print(resp);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +50,8 @@ class _BuyAlertMessagesState extends State<BuyAlertMessages> {
         key: _formKey,
         child: Column(
           children: [
-            DropdownButtonFormField(isExpanded: true,
+            DropdownButtonFormField(
+              isExpanded: true,
               decoration: defaultDecoration("Methode de paiment"),
               items: payoutMethods
                   .map((e) => DropdownMenuItem(
@@ -68,6 +78,12 @@ class _BuyAlertMessagesState extends State<BuyAlertMessages> {
             TextFormField(
               keyboardType: TextInputType.number,
               decoration: defaultDecoration("Nombre de messages"),
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return 'Please enter some text';
+                }
+                return null;
+              },
               onChanged: (value) {
                 if (double.tryParse(value) != null) {
                   setState(() {
@@ -85,7 +101,14 @@ class _BuyAlertMessagesState extends State<BuyAlertMessages> {
             ),
             const SizedBox(height: 10.0),
             TextFormField(
+              controller: transactionController,
               keyboardType: TextInputType.number,
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return 'Please enter some text';
+                }
+                return null;
+              },
               decoration:
                   defaultDecoration("Numéro de la transaction").copyWith(
                 helperText: "Le numéro de la transaction après retrait",
@@ -94,7 +117,9 @@ class _BuyAlertMessagesState extends State<BuyAlertMessages> {
             const SizedBox(height: 20.0),
             Button(
               label: 'Acheter',
-              onTap: () {},
+              onTap: () {
+                saveBuyMessage();
+              },
             ),
           ],
         ),

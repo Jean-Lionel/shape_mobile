@@ -28,7 +28,7 @@ class _EventsState extends State<Events> {
             },
           ),
           const SizedBox(height: 24.0),
-          Column(
+          const Column(
             children: [
               EventCard(),
             ],

@@ -40,7 +40,6 @@ class UserProfile {
       "quantite": price,
       "reference_no": transaction
     };
-
     final response = await postData(
       url: CREDIT_ACHAT,
       data: bodyItem,
@@ -49,6 +48,25 @@ class UserProfile {
     if (response.statusCode >= 200 && response.statusCode < 300) {
       return response.body;
     }
+    throw new Exception("Error: ${response.statusCode}");
+  }
+
+  static Future<String> saveMessage(transaction, currentPM, price) async {
+    var bodyItem = {
+      "reseau": currentPM,
+      "quantite": price,
+      "reference_no": transaction
+    };
+    final response = await postData(
+      url: ACHAT_SMS,
+      data: bodyItem,
+    );
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      return response.body;
+    }
+    print("================================");
+    print(response.body);
     throw new Exception("Error: ${response.statusCode}");
   }
 }
