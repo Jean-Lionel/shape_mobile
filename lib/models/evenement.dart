@@ -17,6 +17,7 @@ class Evenement {
   String? places;
   String? autresInfos;
   String? file;
+  String? logoImage;
 
   Evenement({
     this.typeEvenement,
@@ -32,6 +33,7 @@ class Evenement {
     this.places,
     this.autresInfos,
     this.file,
+    this.logoImage,
   });
 
   Evenement.fromJson(dynamic json)
@@ -47,7 +49,13 @@ class Evenement {
         this.numeroContact2 = json['numeroContact2'],
         this.places = json['places'],
         this.autresInfos = json['autresInfos'],
+        this.logoImage = json['logoImage'],
         this.file = json['file'];
+
+  String? get eventTime {
+    var items = dateEvenement!.split("-");
+    return "Le ${items[2]}/${items[1]}/${items[0]} à $heureEvenement";
+  }
 
   static Future<String> saveEvent(dynamic bodyItem) async {
     final response = await postData(
@@ -66,6 +74,7 @@ class Evenement {
   static Future<List<Evenement>> getEvenemts() async {
     final response = await getData(url: GET_EVENT_DATA);
     final List body = jsonDecode(response.body);
+    print(body[0]);
     return body.map((e) => Evenement.fromJson(e)).toList();
   }
 }

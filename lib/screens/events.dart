@@ -71,18 +71,28 @@ class EventCard extends StatelessWidget {
     return Card(
       elevation: 5,
       child: ListTile(
-        leading: CircleAvatar(child: Text('B')),
+        leading: event.logoImage != null
+            ? CircleAvatar(child: Text('X'))
+            : CircleAvatar(child: Text('E')),
         title: Expanded(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("${event.nomEvenement}"),
-              Text("${event.dateEvenement} ${event.heureEvenement}"),
+              Text("${event.nomEvenement} VENT"),
+              Text("${event.eventTime} "),
             ],
           ),
         ),
-        subtitle: Text('Contact : ${event.numeroContact1} '),
+        subtitle: Row(
+          children: [
+            Icon(Icons.location_on),
+            SizedBox(
+              width: 5,
+            ),
+            Text('${event.adresseEvenement} '),
+          ],
+        ),
         trailing: Icon(Icons.qr_code),
       ),
     );
