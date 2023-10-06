@@ -1,6 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:shapp/config/shared_preference/shared_preference_data.dart';
 import 'package:shapp/utils/utils.dart';
 import 'package:shapp/widgets/_lib.dart';
+
+import '../models/user.dart';
 
 class MyAccount extends StatefulWidget {
   const MyAccount({super.key});
@@ -16,6 +21,12 @@ class _MyAccountState extends State<MyAccount> {
 
   @override
   Widget build(BuildContext context) {
+    String userJson = UserSimplePeference.getUserInfo();
+//final x = userJson;
+    //
+    var json = jsonDecode(userJson);
+    User currentUser = User.fromJson(json);
+
     return FormModel(
       title: 'Mon compte',
       form: Column(
@@ -68,31 +79,31 @@ class _MyAccountState extends State<MyAccount> {
             itemTile(
               context,
               "Prénom et Nom de famille",
-              "Ditho Malipo",
+              " ${currentUser.prenom} ${currentUser.nom}",
               Icons.person_2,
             ),
             itemTile(
               context,
               "Email",
-              "dithoney@gmail.com",
+              "${currentUser.adresseMail}",
               Icons.email,
             ),
             itemTile(
               context,
               "Nom d'utilisateur",
-              "dithoney",
+              "${currentUser.username}",
               Icons.text_format,
             ),
             itemTile(
               context,
               "Numéro de téléphone",
-              "+257 62670198",
+              "${currentUser.telephone}",
               Icons.phone,
             ),
             itemTile(
               context,
               "Pays",
-              "Burundi",
+              "${currentUser.codePays}",
               Icons.language,
             ),
           ],

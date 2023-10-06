@@ -3,34 +3,62 @@ import 'package:shapp/config/config.dart';
 import 'package:shapp/config/routes/routes.dart';
 
 class User {
+  int? id;
   String? nom;
   String? prenom;
-  String? adresseMail;
   String? telephone;
+  String? adresseMail;
+  String? typeCompte;
+  dynamic idAgent;
+  String? codePays;
+  String? genre;
+  String? dateNaissance;
+  String? photoProfil;
+  String? statut;
   String? username;
-  String? password;
-
-  String? access_token;
-  String? quantite_credit;
-  String? quantite_evenement;
-  int? id;
-  String? code_pays;
-  String? quantite_credit_sms;
+  String? roles;
+  dynamic appRoles;
+  String? dateModification;
+  String? dateCreation;
 
   User({
-    this.username,
-    this.password,
-    this.access_token,
-    this.quantite_credit,
-    this.quantite_evenement,
     this.id,
-    this.code_pays,
-    this.quantite_credit_sms,
+    this.nom,
+    this.prenom,
+    this.telephone,
+    this.adresseMail,
+    this.typeCompte,
+    this.idAgent,
+    this.codePays,
+    this.genre,
+    this.dateNaissance,
+    this.photoProfil,
+    this.statut,
+    this.username,
+    this.roles,
+    this.appRoles,
+    this.dateModification,
+    this.dateCreation,
   });
 
   User.fromJson(dynamic json)
-      : this.id = json['id'],
-        this.username = json['username'];
+      : this.id = json["id"] ?? 0,
+        this.nom = json["nom"] ?? "",
+        this.prenom = json["prenom"] ?? "",
+        this.telephone = json["telephone"] ?? "",
+        this.adresseMail = json["adresseMail"] ?? "",
+        this.typeCompte = json["typeCompte"] ?? "",
+        this.idAgent = json["idAgent"],
+        this.codePays = json["codePays"] ?? "",
+        this.genre = json["genre"] ?? "",
+        this.dateNaissance = json["dateNaissance"] ?? "",
+        this.photoProfil = json["photoProfil"] ?? "",
+        this.statut = json["statut"] ?? "",
+        this.username = json["username"] ?? "",
+        this.roles = json["roles"] ?? "",
+        this.appRoles = json["appRoles"] ?? "",
+        this.dateModification = json["dateModification"] ?? "",
+        this.dateCreation = json["dateCreation"] ?? "";
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:shapp/config/shared_preference/shared_preference_data.dart';
 import 'package:shapp/models/user.dart';
 
 import 'package:shapp/screens/_lib.dart';
@@ -67,6 +68,7 @@ class _LoginState extends State<Login> {
           String userResponse = await User.userProfile();
           String jsonsDataString = userResponse.toString();
           final jsonData = jsonDecode(jsonsDataString);
+          UserSimplePeference.setUserInfo(jsonsDataString);
           prefs.setString('user_id', jsonData['id'].toString());
 
           Navigator.of(context).popAndPushNamed(HomeScreensPageView.routeName);

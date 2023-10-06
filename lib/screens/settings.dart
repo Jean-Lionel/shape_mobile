@@ -32,7 +32,7 @@ class Settings extends StatelessWidget {
                     () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (_) => const MyAccount(),
+                          builder: (_) => MyAccount(),
                         ),
                       );
                     },

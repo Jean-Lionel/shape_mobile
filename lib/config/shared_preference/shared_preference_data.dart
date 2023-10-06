@@ -10,6 +10,7 @@ class UserSimplePeference {
   static const String _codePay = "+243";
   static const String _registerPhoneNumber = "992135899";
   static const String _user_profile = "_user_profile";
+  static const String _userInfo = "_userInfo";
 
   static Future init() async => prefs = await SharedPreferences.getInstance();
 
@@ -17,6 +18,8 @@ class UserSimplePeference {
       await prefs.setString(_keyUserName, userName);
   static Future setUserProfile(String userProfile) async =>
       await prefs.setString(_user_profile, userProfile);
+  static Future setUserInfo(String user) async =>
+      await prefs.setString(_userInfo, user);
 
   static Future setUserEmail(String email) async =>
       await prefs.setString(_keyEmail, email);
@@ -34,6 +37,7 @@ class UserSimplePeference {
   static String getUserName() => prefs.getString(_keyUserName) ?? "";
   static String getEmail() => prefs.getString(_keyEmail) ?? "";
   static String getToken() => prefs.getString(_token) ?? "";
+  static String getUserInfo() => prefs.getString(_userInfo) ?? "";
 
   static String getAuthUserId() {
     return prefs.getString("user_id") ?? "";
