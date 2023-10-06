@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:shapp/config/config.dart';
 import 'package:shapp/config/routes/routes.dart';
 
@@ -32,6 +34,21 @@ class Evenement {
     this.file,
   });
 
+  Evenement.fromJson(dynamic json)
+      : this.typeEvenement = json['typeEvenement'],
+        this.nomEvenement = json['nomEvenement'],
+        this.dateEvenement = json['dateEvenement'],
+        this.heureEvenement = json['heureEvenement'],
+        this.dateFinEvenement = json['dateFinEvenement'],
+        this.heureFinEvenement = json['heureFinEvenement'],
+        this.adresseEvenement = json['adresseEvenement'],
+        this.emailResponsable = json['emailResponsable'],
+        this.numeroContact1 = json['numeroContact1'],
+        this.numeroContact2 = json['numeroContact2'],
+        this.places = json['places'],
+        this.autresInfos = json['autresInfos'],
+        this.file = json['file'];
+
   static Future<String> saveEvent(dynamic bodyItem) async {
     final response = await postData(
       url: SAVE_EVENT_DATA,
@@ -44,5 +61,11 @@ class Evenement {
     print(response.body);
 
     return response.body;
+  }
+
+  static Future<List<Evenement>> getEvenemts() async {
+    final response = await getData(url: GET_EVENT_DATA);
+    final List body = jsonDecode(response.body);
+    return body.map((e) => Evenement.fromJson(e)).toList();
   }
 }
