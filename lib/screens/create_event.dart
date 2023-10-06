@@ -3,9 +3,12 @@ import 'dart:io';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:form_builder_file_picker/form_builder_file_picker.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:shapp/models/evenement.dart';
 import 'package:shapp/utils/utils.dart';
 import 'package:shapp/widgets/_lib.dart';
+import 'dart:io';
 
 class CreateEvent extends StatefulWidget {
   const CreateEvent({super.key});
@@ -16,6 +19,20 @@ class CreateEvent extends StatefulWidget {
 
 class _CreateEventState extends State<CreateEvent> {
   final _formKey = GlobalKey<FormState>();
+
+  TextEditingController typeEvenement = TextEditingController();
+  TextEditingController nomEvenement = TextEditingController();
+  TextEditingController dateEvenement = TextEditingController();
+  TextEditingController heureEvenement = TextEditingController();
+  TextEditingController dateFinEvenement = TextEditingController();
+  TextEditingController heureFinEvenement = TextEditingController();
+  TextEditingController adresseEvenement = TextEditingController();
+  TextEditingController emailResponsable = TextEditingController();
+  TextEditingController numeroContact1 = TextEditingController();
+  TextEditingController numeroContact2 = TextEditingController();
+  TextEditingController places = TextEditingController();
+  TextEditingController autresInfos = TextEditingController();
+  TextEditingController file = TextEditingController();
 
   final payoutMethods = [
     {
@@ -39,6 +56,43 @@ class _CreateEventState extends State<CreateEvent> {
   double price = 0.0;
   final _timeController = TextEditingController();
   final _timeEndController = TextEditingController();
+  XFile? image;
+  final ImagePicker picker = ImagePicker();
+
+  Future getImage(ImageSource media) async {
+    var img = await picker.pickImage(source: media);
+    setState(() {
+      image = img;
+    });
+  }
+
+  void saveEvent() async {
+    if (_formKey.currentState!.validate()) {
+      // If the form is valid, display a snackbar. In the real world,
+      // you'd often call a server or save the information in a database.4
+
+      var bodyItem = {
+        "typeEvenement": "Prive", // typeEvenement.text,
+        "nomEvenement": nomEvenement.text,
+        "dateEvenement": dateEvenement.text,
+        "heureEvenement": heureEvenement.text,
+        "dateFinEvenement": dateFinEvenement.text,
+        "heureFinEvenement": heureFinEvenement.text,
+        "adresseEvenement": adresseEvenement.text,
+        "emailResponsable": emailResponsable.text,
+        "numeroContact1": numeroContact1.text,
+        "numeroContact2": numeroContact2.text,
+        "places": places.text,
+        "autresInfos": autresInfos.text,
+        "file": file.text,
+      };
+
+      Evenement.saveEvent(bodyItem);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Processing Data')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,15 +103,23 @@ class _CreateEventState extends State<CreateEvent> {
         child: Column(
           children: [
             TextFormField(
+              controller: nomEvenement,
               keyboardType: TextInputType.name,
               textCapitalization: TextCapitalization.words,
               decoration: defaultDecoration("Nom de l'événement"),
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return "Le nom de l'événement est obligatoire";
+                }
+                return null;
+              },
             ),
             const SizedBox(height: 10.0),
             Row(
               children: [
                 Expanded(
                   child: DateTimeField(
+                    controller: dateEvenement,
                     format: DateFormat.yMd(Platform.localeName),
                     decoration: defaultDecoration("Date debut"),
                     onShowPicker: (context, currentValue) => showDatePicker(
@@ -71,6 +133,7 @@ class _CreateEventState extends State<CreateEvent> {
                 const SizedBox(width: 10.0),
                 Expanded(
                   child: DateTimeField(
+                    controller: heureEvenement,
                     format: DateFormat.yMd(Platform.localeName),
                     decoration: defaultDecoration("Date fin"),
                     onShowPicker: (context, currentValue) => showDatePicker(
@@ -141,12 +204,14 @@ class _CreateEventState extends State<CreateEvent> {
             ),
             const SizedBox(height: 10.0),
             TextFormField(
+              controller: heureFinEvenement,
               keyboardType: TextInputType.phone,
               textCapitalization: TextCapitalization.words,
               decoration: defaultDecoration("Adresse de l'événement"),
             ),
             const SizedBox(height: 10.0),
             TextFormField(
+              controller: emailResponsable,
               keyboardType: TextInputType.emailAddress,
               textCapitalization: TextCapitalization.words,
               decoration: defaultDecoration("Email du responsable"),
@@ -156,6 +221,7 @@ class _CreateEventState extends State<CreateEvent> {
               children: [
                 Expanded(
                   child: TextFormField(
+                    controller: numeroContact1,
                     keyboardType: TextInputType.phone,
                     textCapitalization: TextCapitalization.words,
                     decoration: defaultDecoration("Premier contact"),
@@ -164,6 +230,7 @@ class _CreateEventState extends State<CreateEvent> {
                 const SizedBox(width: 10.0),
                 Expanded(
                   child: TextFormField(
+                    controller: numeroContact1,
                     keyboardType: TextInputType.phone,
                     textCapitalization: TextCapitalization.words,
                     decoration: defaultDecoration("Deuxième contact"),
@@ -184,18 +251,22 @@ class _CreateEventState extends State<CreateEvent> {
             ),
             const SizedBox(height: 10.0),
             TextFormField(
+              controller: autresInfos,
               maxLines: 5,
               decoration: defaultDecoration("Texte de l'invitation"),
             ),
             const SizedBox(height: 10.0),
             const KeyValueInput(
+              //controller: places,
               headers: [],
               label: "Catégories de place",
             ),
             const SizedBox(height: 10.0),
             Button(
               label: 'Enregistrer',
-              onTap: () {},
+              onTap: () {
+                saveEvent();
+              },
             ),
           ],
         ),

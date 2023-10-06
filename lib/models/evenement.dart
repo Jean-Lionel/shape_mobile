@@ -1,3 +1,6 @@
+import 'package:shapp/config/config.dart';
+import 'package:shapp/config/routes/routes.dart';
+
 class Evenement {
   String? typeEvenement;
   String? nomEvenement;
@@ -28,4 +31,18 @@ class Evenement {
     this.autresInfos,
     this.file,
   });
+
+  static Future<String> saveEvent(dynamic bodyItem) async {
+    final response = await postData(
+      url: SAVE_EVENT_DATA,
+      data: bodyItem,
+      contentType: "application/x-www-form-urlencoded",
+    );
+    print("==================BODY==============================");
+    print(bodyItem);
+    print(response.statusCode);
+    print(response.body);
+
+    return response.body;
+  }
 }

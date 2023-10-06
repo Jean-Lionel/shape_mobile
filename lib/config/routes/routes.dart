@@ -24,3 +24,4 @@ final CREDIT_SMS_PROFILE = makeUrl("credit/sms/profile");
 final VERIFY_OTP = makeUrl("verifyotp");
 final CREDIT_ACHAT = makeUrl("credit/achat/$user_id");
 final ACHAT_SMS = makeUrl("credit/achat/sms/$user_id");
+final SAVE_EVENT_DATA = makeUrl("save/evenement");

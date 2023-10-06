@@ -52,6 +52,7 @@ dependencies:
   share_plus:
   syncfusion_flutter_barcodes:
   package_info_plus:
+  image_picker: 
   
 
 dev_dependencies:
