@@ -63,37 +63,50 @@ class _EventsState extends State<Events> {
 }
 
 class EventCard extends StatelessWidget {
-  Evenement event;
-  EventCard(this.event, {super.key});
+  final Evenement event;
+  const EventCard(this.event, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
-      child: ListTile(
-        leading: event.logoImage != null
-            ? CircleAvatar(child: Text('X'))
-            : CircleAvatar(child: Text('E')),
-        title: Expanded(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return InkWell(
+      onTap: () {
+        print("Click Event ");
+
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => EventDetails(event),
+          ),
+        );
+      },
+      child: Card(
+        elevation: 5,
+        child: ListTile(
+          leading: event.logoImage != null
+              ? const CircleAvatar(
+                  backgroundImage: NetworkImage(
+                      "https://hips.hearstapps.com/hmg-prod/images/wedding-wishes-1645634516.jpg?crop=1xw:0.8429543847241867xh;center,top"))
+              : const CircleAvatar(child: Text('E')),
+          title: Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("${event.nomEvenement} VENT"),
+                Text("${event.eventTime} "),
+              ],
+            ),
+          ),
+          subtitle: Row(
             children: [
-              Text("${event.nomEvenement} VENT"),
-              Text("${event.eventTime} "),
+              Icon(Icons.location_on),
+              SizedBox(
+                width: 5,
+              ),
+              Text('${event.adresseEvenement} '),
             ],
           ),
+          trailing: Icon(Icons.qr_code),
         ),
-        subtitle: Row(
-          children: [
-            Icon(Icons.location_on),
-            SizedBox(
-              width: 5,
-            ),
-            Text('${event.adresseEvenement} '),
-          ],
-        ),
-        trailing: Icon(Icons.qr_code),
       ),
     );
   }

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:shapp/models/evenement.dart';
 import 'package:shapp/screens/_lib.dart';
 
 class EventDetails extends StatelessWidget {
-  const EventDetails({Key? key}) : super(key: key);
+  final Evenement event;
+  const EventDetails(this.event, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +67,7 @@ class EventDetails extends StatelessWidget {
                                   MediaQuery.of(context).size.height * 0.25),
                           const SizedBox(height: 20.0),
                           Text(
-                            'Alvin & Nailah Wedding',
+                            '${event.nomEvenement}',
                             overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.center,
                             style: Theme.of(context)
@@ -102,41 +104,40 @@ class EventDetails extends StatelessWidget {
                         icon: const Icon(Icons.sms),
                         label: const Text('SMS/MAIL ALERT'),
                       ),
-                      const ListTile(
+                      ListTile(
                         contentPadding: EdgeInsets.all(0.0),
                         title: Text('Date'),
-                        subtitle: Text('25 August, 2022'),
+                        subtitle: Text("${event.dateEvenement}"),
                       ),
-                      const ListTile(
+                      ListTile(
                         contentPadding: EdgeInsets.all(0.0),
                         title: Text('Heure'),
-                        subtitle: Text("16:00'"),
+                        subtitle: Text("${event.heureEvenement}'"),
                       ),
-                      const ListTile(
+                      ListTile(
                         contentPadding: EdgeInsets.all(0.0),
                         title: Text("Adresse de l'événement"),
-                        subtitle: Text('Odeon Palace'),
+                        subtitle: Text('${event.adresseEvenement}'),
                       ),
-                      const ListTile(
+                      ListTile(
                         contentPadding: EdgeInsets.all(0.0),
                         title: Text("Email du responsable"),
-                        subtitle: Text('jdoe@gmail.com'),
+                        subtitle: Text('${event.emailResponsable}'),
                       ),
-                      const ListTile(
+                      ListTile(
                         contentPadding: EdgeInsets.all(0.0),
                         title: Text("Premier Contact"),
-                        subtitle: Text('+917239817'),
+                        subtitle: Text('${event.numeroContact1}'),
                       ),
-                      const ListTile(
+                      ListTile(
                         contentPadding: EdgeInsets.all(0.0),
                         title: Text("Deuxième Contact"),
-                        subtitle: Text('+917239817'),
+                        subtitle: Text('${event.numeroContact2}'),
                       ),
-                      const ListTile(
+                      ListTile(
                         contentPadding: EdgeInsets.all(0.0),
                         title: Text('Description'),
-                        subtitle: Text(
-                            'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Tempore eius est maxime, nihil quae veritatis ipsa optio, tenetur pariatur labore eos quibusdam facilis cupiditate nulla,'),
+                        subtitle: Text('${event.autresInfos}'),
                       ),
                       ExpansionTile(
                         tilePadding: const EdgeInsets.all(0.0),
