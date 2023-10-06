@@ -1,6 +1,3 @@
-// URL DU SERVEUR
-import 'dart:async';
-
 import 'package:shapp/config/shared_preference/shared_preference_data.dart';
 
 final String IP_ADDRESS = "http://shappu-v2.eu-north-1.elasticbeanstalk.com/";

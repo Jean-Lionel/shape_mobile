@@ -1,14 +1,16 @@
+import 'dart:convert';
 import 'dart:io';
-
+import 'dart:typed_data';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:form_builder_file_picker/form_builder_file_picker.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:shapp/config/routes/routes.dart';
+import 'package:shapp/config/shared_preference/shared_preference_data.dart';
 import 'package:shapp/models/evenement.dart';
 import 'package:shapp/utils/utils.dart';
 import 'package:shapp/widgets/_lib.dart';
-import 'dart:io';
+import 'package:http/http.dart' as http;
 
 class CreateEvent extends StatefulWidget {
   const CreateEvent({super.key});
@@ -56,41 +58,64 @@ class _CreateEventState extends State<CreateEvent> {
   double price = 0.0;
   final _timeController = TextEditingController();
   final _timeEndController = TextEditingController();
-  XFile? image;
-  final ImagePicker picker = ImagePicker();
+  List<PlatformFile>? _selectedFiles;
 
-  Future getImage(ImageSource media) async {
-    var img = await picker.pickImage(source: media);
-    setState(() {
-      image = img;
-    });
-  }
+  Future<void> saveEvent() async {
+    print("==================SAVE BEGINING==================================");
+    // if (_selectedFiles == null || _selectedFiles!.isEmpty) {
+    //   // Handle the case where no images are selected
+    //   return;
+    // }
+    try {
+      // Create a multipart request
+      final request = http.MultipartRequest('POST', SAVE_EVENT_DATA);
+      var token = UserSimplePeference.getToken();
+      request.headers.addAll({
+        "Authorization": "Bearer $token",
+        "Content-Type": "application/x-www-form-urlencoded",
+      });
+      // Add each selected file as a part of the request
+      for (var file in _selectedFiles!) {
+        // Read the contents of the PlatformFile into Uint8List
+        Uint8List? fileBytes = await file.bytes;
+        request.files.add(
+          http.MultipartFile.fromBytes(
+            'images[]', // Field name for each file
+            fileBytes!,
+            filename: file.name,
+          ),
+        );
+      }
+      request.fields["typeEvenement"] = "Prive"; // typeEvenement.text;
+      request.fields["nomEvenement"] = nomEvenement.text;
+      request.fields["dateEvenement"] = dateEvenement.text;
+      request.fields["heureEvenement"] = heureEvenement.text;
+      request.fields["dateFinEvenement"] = dateFinEvenement.text;
+      request.fields["heureFinEvenement"] = heureFinEvenement.text;
+      request.fields["adresseEvenement"] = adresseEvenement.text;
+      request.fields["emailResponsable"] = emailResponsable.text;
+      request.fields["numeroContact1"] = numeroContact1.text;
+      request.fields["numeroContact2"] = numeroContact2.text;
+      request.fields["places"] = places.text;
+      request.fields["autresInfos"] = autresInfos.text;
+      request.fields["file"] = file.text;
+      // Send the request
+      print(request.fields);
+      print(token);
 
-  void saveEvent() async {
-    if (_formKey.currentState!.validate()) {
-      // If the form is valid, display a snackbar. In the real world,
-      // you'd often call a server or save the information in a database.4
-
-      var bodyItem = {
-        "typeEvenement": "Prive", // typeEvenement.text,
-        "nomEvenement": nomEvenement.text,
-        "dateEvenement": dateEvenement.text,
-        "heureEvenement": heureEvenement.text,
-        "dateFinEvenement": dateFinEvenement.text,
-        "heureFinEvenement": heureFinEvenement.text,
-        "adresseEvenement": adresseEvenement.text,
-        "emailResponsable": emailResponsable.text,
-        "numeroContact1": numeroContact1.text,
-        "numeroContact2": numeroContact2.text,
-        "places": places.text,
-        "autresInfos": autresInfos.text,
-        "file": file.text,
-      };
-
-      Evenement.saveEvent(bodyItem);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Processing Data')),
-      );
+      final response = await request.send();
+      response.stream.transform(utf8.decoder).listen((value) {
+        print(value);
+      });
+      if (response.statusCode == 200) {
+        // Images uploaded successfully
+        print('Images uploaded successfully to the API');
+      } else {
+        // Handle errors based on the API response
+        print('Error uploading the images to the API');
+      }
+    } catch (error) {
+      print('An error occurred while uploading the images: $error');
     }
   }
 
@@ -240,12 +265,15 @@ class _CreateEventState extends State<CreateEvent> {
             ),
             const SizedBox(height: 10.0),
             FormBuilderFilePicker(
-              name: "Selectionner l'image",
+              name: "images",
+              maxFiles: 1,
               decoration: defaultDecoration("Selectionner l'image"),
               withData: true,
               allowMultiple: false,
               previewImages: true,
-              onChanged: (val) {},
+              onChanged: (val) {
+                _selectedFiles = val;
+              },
               onSaved: (value) {},
               onFileLoading: (val) {},
             ),
