@@ -7,7 +7,6 @@ import 'package:form_builder_file_picker/form_builder_file_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:shapp/config/routes/routes.dart';
 import 'package:shapp/config/shared_preference/shared_preference_data.dart';
-import 'package:shapp/models/evenement.dart';
 import 'package:shapp/utils/utils.dart';
 import 'package:shapp/widgets/_lib.dart';
 import 'package:http/http.dart' as http;
@@ -66,57 +65,64 @@ class _CreateEventState extends State<CreateEvent> {
     //   // Handle the case where no images are selected
     //   return;
     // }
-    try {
-      // Create a multipart request
-      final request = http.MultipartRequest('POST', SAVE_EVENT_DATA);
-      var token = UserSimplePeference.getToken();
-      request.headers.addAll({
-        "Authorization": "Bearer $token",
-        "Content-Type": "application/x-www-form-urlencoded",
-      });
-      // Add each selected file as a part of the request
-      for (var file in _selectedFiles!) {
-        // Read the contents of the PlatformFile into Uint8List
-        Uint8List? fileBytes = await file.bytes;
-        request.files.add(
-          http.MultipartFile.fromBytes(
-            'images[]', // Field name for each file
-            fileBytes!,
-            filename: file.name,
-          ),
-        );
-      }
-      request.fields["typeEvenement"] = "Prive"; // typeEvenement.text;
-      request.fields["nomEvenement"] = nomEvenement.text;
-      request.fields["dateEvenement"] = dateEvenement.text;
-      request.fields["heureEvenement"] = heureEvenement.text;
-      request.fields["dateFinEvenement"] = dateFinEvenement.text;
-      request.fields["heureFinEvenement"] = heureFinEvenement.text;
-      request.fields["adresseEvenement"] = adresseEvenement.text;
-      request.fields["emailResponsable"] = emailResponsable.text;
-      request.fields["numeroContact1"] = numeroContact1.text;
-      request.fields["numeroContact2"] = numeroContact2.text;
-      request.fields["places"] = places.text;
-      request.fields["autresInfos"] = autresInfos.text;
-      request.fields["file"] = file.text;
-      // Send the request
-      print(request.fields);
-      print(token);
+    //try {
+    // Create a multipart request
+    final request = http.MultipartRequest('POST', SAVE_EVENT_DATA);
+    var token = UserSimplePeference.getToken();
+    request.headers.addAll({
+      "Authorization": "Bearer $token",
+      "Content-Type": "application/x-www-form-urlencoded",
+    });
+    // Add each selected file as a part of the request
+    for (var file in _selectedFiles!) {
+      // Read the contents of the PlatformFile into Uint8List
+      Uint8List? fileBytes = await file.bytes;
+      request.files.add(
+        http.MultipartFile.fromBytes(
+          'images[]', // Field name for each file
+          fileBytes!,
+          filename: file.name,
+        ),
+      );
+    }
+    request.fields["typeEvenement"] = "Prive"; // typeEvenement.text;
+    request.fields["nomEvenement"] = nomEvenement.text;
+    request.fields["dateEvenement"] = dateEvenement.text;
+    request.fields["heureEvenement"] = heureEvenement.text;
+    request.fields["dateFinEvenement"] = dateFinEvenement.text;
+    request.fields["heureFinEvenement"] = heureFinEvenement.text;
+    request.fields["adresseEvenement"] = adresseEvenement.text;
+    request.fields["emailResponsable"] = emailResponsable.text;
+    request.fields["numeroContact1"] = numeroContact1.text;
+    request.fields["numeroContact2"] = numeroContact2.text;
+    request.fields["places"] = places.text;
+    request.fields["autresInfos"] = autresInfos.text;
+    request.fields["file"] = file.text;
 
-      final response = await request.send();
-      response.stream.transform(utf8.decoder).listen((value) {
-        print(value);
-      });
+    // Send the request
+    print(request.fields);
+    print(token);
+    try {
+      final streamResponse = await request.send();
+      final response = await http.Response.fromStream(streamResponse);
+      // final response = await request.send();
+      // response.stream.transform(utf8.decoder).listen((value) {
+      //   print(value);
+      // });
       if (response.statusCode == 200) {
         // Images uploaded successfully
-        print('Images uploaded successfully to the API');
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+       // return responseData;
+        // print('Images uploaded successfully to the API');
       } else {
         // Handle errors based on the API response
-        print('Error uploading the images to the API');
+        // print('Error uploading the images to the API');
+       // return null;
       }
     } catch (error) {
       print('An error occurred while uploading the images: $error');
     }
+    //return null;
   }
 
   @override
@@ -255,7 +261,7 @@ class _CreateEventState extends State<CreateEvent> {
                 const SizedBox(width: 10.0),
                 Expanded(
                   child: TextFormField(
-                    controller: numeroContact1,
+                    controller: numeroContact2,
                     keyboardType: TextInputType.phone,
                     textCapitalization: TextCapitalization.words,
                     decoration: defaultDecoration("Deuxième contact"),

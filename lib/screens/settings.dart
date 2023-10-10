@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shapp/screens/_lib.dart';
+import 'package:shapp/screens/scan_screen.dart';
 
 class Settings extends StatelessWidget {
   const Settings({super.key});
@@ -45,6 +46,18 @@ class Settings extends StatelessWidget {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (_) => const ChangePassword(),
+                        ),
+                      );
+                    },
+                  ),
+                  itemTile(
+                    context,
+                    "Scanner invitation",
+                    Icons.qr_code_scanner,
+                    () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const ScanScreen(),
                         ),
                       );
                     },
