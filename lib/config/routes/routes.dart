@@ -2,9 +2,9 @@ import 'package:shapp/config/shared_preference/shared_preference_data.dart';
 
 final String IP_ADDRESS = "http://shappu-v2.eu-north-1.elasticbeanstalk.com/";
 
-Uri makeUrl(String url) {
-  String full_url = IP_ADDRESS + url;
-  return Uri.parse(full_url);
+Uri makeUrl(String url, {dynamic params = ""}) {
+  String fullUrl = '$IP_ADDRESS$url$params';
+  return Uri.parse(fullUrl);
 }
 
 String user_id = UserSimplePeference.getAuthUserId();
@@ -23,3 +23,4 @@ final CREDIT_ACHAT = makeUrl("credit/achat/$user_id");
 final ACHAT_SMS = makeUrl("credit/achat/sms/$user_id");
 final SAVE_EVENT_DATA = makeUrl("save/evenement");
 final GET_EVENT_DATA = makeUrl("evenements");
+final EVENT_PLACE = makeUrl("evenement/places/");

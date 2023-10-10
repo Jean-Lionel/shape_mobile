@@ -1,12 +1,17 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
+import 'package:shapp/models/evenement.dart';
+import 'package:shapp/models/invitation.dart';
+import 'package:shapp/models/places.dart';
 import 'package:shapp/screens/_lib.dart';
 import 'package:shapp/utils/utils.dart';
 import 'package:shapp/widgets/_lib.dart';
 import 'package:syncfusion_flutter_barcodes/barcodes.dart';
 
 class EventPlaceCategorie extends StatefulWidget {
-  const EventPlaceCategorie({super.key});
-
+  final Place place;
+  const EventPlaceCategorie(this.place, {super.key});
   @override
   State<EventPlaceCategorie> createState() => _EventPlaceCategorieState();
 }
@@ -18,7 +23,9 @@ class _EventPlaceCategorieState extends State<EventPlaceCategorie> {
 
   @override
   Widget build(BuildContext context) {
-    final canAdd = invitations.length < 10;
+    Place p = widget.place;
+    Invitation.getInvitation(p.id);
+    final canAdd = invitations.length < int.parse(p.nombre);
     return Scaffold(
       body: CustomScrollView(
         slivers: [

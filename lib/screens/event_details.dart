@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shapp/models/evenement.dart';
+import 'package:shapp/models/places.dart';
 import 'package:shapp/screens/_lib.dart';
 
 class EventDetails extends StatelessWidget {
@@ -8,6 +9,7 @@ class EventDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Future<List<Place>> _placesListe = Place.getPlaces(event.id);
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -139,27 +141,25 @@ class EventDetails extends StatelessWidget {
                         title: Text('Description'),
                         subtitle: Text('${event.autresInfos}'),
                       ),
-                      ExpansionTile(
-                        tilePadding: const EdgeInsets.all(0.0),
-                        childrenPadding: const EdgeInsets.all(0.0),
-                        title: const Text('Catégories de places'),
-                        children: List.generate(
-                          4,
-                          (index) => ListTile(
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                    builder: (_) =>
-                                        const EventPlaceCategorie()),
-                              );
-                            },
-                            contentPadding: const EdgeInsets.all(0.0),
-                            title: Text('Categorie ${index + 1}'),
-                            subtitle: Text('${index * 34} invitations'),
-                            trailing: const Icon(Icons.arrow_forward_outlined),
-                          ),
-                        ).toList(),
-                      ),
+                      FutureBuilder(
+                          future: _placesListe,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              // do something till waiting for data, we can show here a loader
+                              return const CircularProgressIndicator();
+                            } else if (snapshot.hasData) {
+                              // we have the data, do stuff here
+                              final places = snapshot.data!;
+
+                              return displayPlaces(context, places);
+                              // EventCard();
+                              // buildEvents(events);
+                            } else {
+                              // we did not recieve any data, maybe show error or no data available
+                              return Text("Error :");
+                            }
+                          }),
                     ],
                   ),
                 ),
@@ -170,4 +170,31 @@ class EventDetails extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget displayPlaces(context, places) {
+  return Column(
+    children: [
+      ExpansionTile(
+        tilePadding: const EdgeInsets.all(0.0),
+        childrenPadding: const EdgeInsets.all(0.0),
+        title: const Text('Catégories de places'),
+        children: List.generate(
+          places.length,
+          (index) => ListTile(
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                    builder: (_) => EventPlaceCategorie(places[index])),
+              );
+            },
+            contentPadding: const EdgeInsets.all(0.0),
+            title: Text('${places[index].nomPlace}'),
+            subtitle: Text('${places[index].nombre} invitations'),
+            trailing: const Icon(Icons.arrow_forward_outlined),
+          ),
+        ).toList(),
+      ),
+    ],
+  );
 }

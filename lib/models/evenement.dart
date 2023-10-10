@@ -4,6 +4,7 @@ import 'package:shapp/config/config.dart';
 import 'package:shapp/config/routes/routes.dart';
 
 class Evenement {
+  dynamic id;
   String? typeEvenement;
   String? nomEvenement;
   String? dateEvenement;
@@ -37,7 +38,8 @@ class Evenement {
   });
 
   Evenement.fromJson(dynamic json)
-      : this.typeEvenement = json['typeEvenement'],
+      : this.id = json['id'],
+        this.typeEvenement = json['typeEvenement'],
         this.nomEvenement = json['nomEvenement'],
         this.dateEvenement = json['dateEvenement'],
         this.heureEvenement = json['heureEvenement'],
@@ -73,8 +75,9 @@ class Evenement {
 
   static Future<List<Evenement>> getEvenemts() async {
     final response = await getData(url: GET_EVENT_DATA);
+
     final List body = jsonDecode(response.body);
-    print(body[0]);
+
     return body.map((e) => Evenement.fromJson(e)).toList();
   }
 }

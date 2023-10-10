@@ -54,6 +54,7 @@ dependencies:
   syncfusion_flutter_barcodes:
   package_info_plus:
   image_picker: 
+  barcode_scanner: ^3.6.0
   
 
 dev_dependencies:
