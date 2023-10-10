@@ -25,6 +25,8 @@ class _LoginState extends State<Login> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
+  bool isLoading = false;
+
   late SharedPreferences prefs;
   @override
   void initState() {
@@ -44,6 +46,9 @@ class _LoginState extends State<Login> {
     String pass = _passwordController.text;
 
     if (username.isNotEmpty && pass.isNotEmpty) {
+      setState(() {
+        isLoading = true;
+      });
       var reqBody = {
         "username": username, //"admin@admin.com",
         "password": pass // "password",
@@ -79,6 +84,9 @@ class _LoginState extends State<Login> {
       } catch (e) {
         print(e);
       }
+      setState(() {
+        isLoading = false;
+      });
     } else {
       Navigator.of(context).popAndPushNamed(Login.routeName);
     }
@@ -128,12 +136,14 @@ class _LoginState extends State<Login> {
                                 decoration: defaultDecoration("Mot de passe"),
                               ),
                               const SizedBox(height: 10.0),
-                              Button(
-                                label: 'Connexion',
-                                onTap: () {
-                                  loginUser();
-                                },
-                              ),
+                              isLoading
+                                  ? CircularProgressIndicator()
+                                  : Button(
+                                      label: 'Connexion',
+                                      onTap: () {
+                                        loginUser();
+                                      },
+                                    ),
                             ],
                           ),
                         ),

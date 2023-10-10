@@ -8,6 +8,7 @@ class EventDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Evenement.getPlaces(event.id);
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
