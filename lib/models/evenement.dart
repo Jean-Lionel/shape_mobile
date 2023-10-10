@@ -80,12 +80,4 @@ class Evenement {
 
     return body.map((e) => Evenement.fromJson(e)).toList();
   }
-
-  static Future<void> getPlaces(var idEvent) async {
-    final urlData = makeUrl("evenement/places/", params: idEvent);
-    // final response = await getData(url: urlData);
-    // final List body = jsonDecode(response.body);
-    print('====================RESPONSE ===================================');
-    print(urlData);
-  }
 }
