@@ -1,8 +1,10 @@
 import 'dart:convert';
 
+import 'package:barcode_scanner/scanbot_sdk_models.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:shapp/config/shared_preference/shared_preference_data.dart';
+import 'package:shapp/models/response_model.dart';
 import 'package:shapp/models/user.dart';
 
 import 'package:shapp/screens/_lib.dart';
@@ -28,6 +30,7 @@ class _LoginState extends State<Login> {
   bool isLoading = false;
 
   late SharedPreferences prefs;
+  late ResponseModel responseModel;
   @override
   void initState() {
     super.initState();
@@ -40,12 +43,37 @@ class _LoginState extends State<Login> {
     prefs = await SharedPreferences.getInstance();
   }
 
-  void loginUser() async {
+  Future<ResponseModel> loginUser() async {
     print("${_emailController.text} + ${_passwordController.text}");
     String username = _emailController.text;
     String pass = _passwordController.text;
-
-    if (username.isNotEmpty && pass.isNotEmpty) {
+    if (username.isEmpty) {
+      const Dialog(
+        child: Row(
+          children: [
+            Icon(
+              Icons.cancel,
+              color: Colors.redAccent,
+            ),
+            Text("Entrer le nom")
+          ],
+        ),
+      );
+    }
+    if (pass.isEmpty) {
+      const Dialog(
+        child: Row(
+          children: [
+            Icon(
+              Icons.cancel,
+              color: Colors.redAccent,
+            ),
+            Text("Password empty")
+          ],
+        ),
+      );
+    }
+    try {
       setState(() {
         isLoading = true;
       });
@@ -54,42 +82,44 @@ class _LoginState extends State<Login> {
         "password": pass // "password",
       };
 
-      try {
-        final response = await http.post(
-          LOGIN_URL,
-          headers: {
-            "content-type": "application/json",
-            "Accept": "application/json"
-          },
-          body: jsonEncode(reqBody),
-        );
-        if (response.statusCode == 200) {
-          var jsonResponse = jsonDecode(response.body);
-          String token = jsonResponse["access_token"];
-          print("token : $token");
-          prefs.setString('token', token);
-          prefs.setString('user', jsonEncode(jsonResponse));
-          // Navigator.of(context).popAndPushNamed(HomeScreen.routeName);
-          String userResponse = await User.userProfile();
-          String jsonsDataString = userResponse.toString();
-          final jsonData = jsonDecode(jsonsDataString);
-          UserSimplePeference.setUserInfo(jsonsDataString);
-          prefs.setString('user_id', jsonData['id'].toString());
+      var response = await http.post(
+        LOGIN_URL,
+        headers: {
+          "content-type": "application/json",
+          "Accept": "application/json"
+        },
+        body: jsonEncode(reqBody),
+      );
 
-          Navigator.of(context).popAndPushNamed(HomeScreensPageView.routeName);
-        }
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(response.body);
+        String token = jsonResponse["access_token"];
+        print("token : $token");
+        prefs.setString('token', token);
+        prefs.setString('user', jsonEncode(jsonResponse));
+        // Navigator.of(context).popAndPushNamed(HomeScreen.routeName);
+        String userResponse = await User.userProfile();
+        String jsonsDataString = userResponse.toString();
+        final jsonData = jsonDecode(jsonsDataString);
+        UserSimplePeference.setUserInfo(jsonsDataString);
+        prefs.setString('user_id', jsonData['id'].toString());
+        responseModel = ResponseModel(true, jsonResponse["access_token"]);
 
-        print("================================================");
-        print(response.body);
-      } catch (e) {
-        print(e);
+        // Navigator.of(context).popAndPushNamed(HomeScreensPageView.routeName);
+      } else {
+        responseModel = ResponseModel(false, response.statusCode.toString());
       }
-      setState(() {
-        isLoading = false;
-      });
-    } else {
-      Navigator.of(context).popAndPushNamed(Login.routeName);
+
+      print("================================================");
+      print(response.body);
+    } catch (e) {
+      print(e);
     }
+    setState(() {
+      isLoading = false;
+    });
+
+    return responseModel;
   }
 
   final _formKey = GlobalKey<FormState>();
@@ -141,7 +171,27 @@ class _LoginState extends State<Login> {
                                   : Button(
                                       label: 'Connexion',
                                       onTap: () {
-                                        loginUser();
+                                        loginUser().then((value) async {
+                                          if (value.isSuccess) {
+                                            Navigator.of(context)
+                                                .popAndPushNamed(
+                                                    HomeScreensPageView
+                                                        .routeName);
+                                          } else {
+                                            const Dialog(
+                                              child: Row(
+                                                children: [
+                                                  Icon(
+                                                    Icons.cancel,
+                                                    color: Colors.redAccent,
+                                                  ),
+                                                  Text(
+                                                      "Wrong user name or password")
+                                                ],
+                                              ),
+                                            );
+                                          }
+                                        });
                                       },
                                     ),
                             ],
