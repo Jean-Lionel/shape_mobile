@@ -55,7 +55,7 @@ class _BuyAlertMessagesState extends State<BuyAlertMessages> {
               items: payoutMethods
                   .map((e) => DropdownMenuItem(
                         value: e,
-                        child: Text('${e['name']}'),
+                        child: Text('${e['code_name']}'),
                       ))
                   .toList(),
               onChanged: (payout) {
@@ -68,7 +68,7 @@ class _BuyAlertMessagesState extends State<BuyAlertMessages> {
               const SizedBox(height: 10.0),
               Card(
                 child: ListTile(
-                  title: Text(currentPM!['code-name']),
+                  title: Text(currentPM!['code_name']),
                   subtitle: Text("CODE AGENT ${currentPM!['code']}"),
                 ),
               ),
