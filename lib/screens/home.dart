@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:shapp/config/config.dart';
+import 'package:shapp/models/userProfile.dart';
 import 'package:shapp/screens/_lib.dart';
 
 import '../config/provider/homePageProvider.dart';
@@ -12,9 +13,9 @@ class Home extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final _dataEvent = ref.watch(eventResult);
-    final _dataCredit = ref.watch(quantiteCredit);
-    final _dataSMS = ref.watch(credit_sms);
+    final _dataEvent = UserProfile.eventProfile();
+    final _dataCredit = UserProfile.quantiteCredit();
+    final _dataSMS = UserProfile.credit_sms();
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -77,13 +78,22 @@ class Home extends ConsumerWidget {
                               Row(
                                 children: [
                                   Expanded(
-                                      child: _dataCredit.when(
-                                          data: (el) {
+                                    child: FutureBuilder(
+                                        future: _dataCredit,
+                                        builder: (context, snapshot) {
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            // do something till waiting for data, we can show here a loader
+                                            return const CircularProgressIndicator();
+                                          } else if (snapshot.hasData) {
+                                            // we have the data, do stuff here
+                                            final e = snapshot.data!;
+                                            print("Current data: " + e);
                                             return Text(
                                               NumberFormat.compact(
                                                       locale: 'en_US')
                                                   .format(
-                                                      double.tryParse('$el')),
+                                                      double.tryParse('$e')),
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .headlineMedium!
@@ -92,9 +102,14 @@ class Home extends ConsumerWidget {
                                                     color: Colors.white,
                                                   ),
                                             );
-                                          },
-                                          error: (e, t) => Text("$e"),
-                                          loading: () => Text("Loading..."))),
+                                            // EventCard();
+                                            // buildEvents(events);
+                                          } else {
+                                            // we did not recieve any data, maybe show error or no data available
+                                            return Text("Error :");
+                                          }
+                                        }),
+                                  ),
                                   CircleAvatar(
                                     child: IconButton(
                                       onPressed: () {
@@ -149,13 +164,21 @@ class Home extends ConsumerWidget {
                               Row(
                                 children: [
                                   Expanded(
-                                      child: _dataEvent.when(
-                                          data: (e) {
+                                    child: FutureBuilder(
+                                        future: _dataEvent,
+                                        builder: (context, snapshot) {
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            // do something till waiting for data, we can show here a loader
+                                            return const CircularProgressIndicator();
+                                          } else if (snapshot.hasData) {
+                                            // we have the data, do stuff here
+                                            final e = snapshot.data!;
                                             return Text(
                                               NumberFormat.compact(
                                                       locale: 'en_US')
                                                   .format(
-                                                      double.tryParse("$e")),
+                                                      double.tryParse('$e')),
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .headlineMedium!
@@ -165,10 +188,14 @@ class Home extends ConsumerWidget {
                                                         .primaryColor,
                                                   ),
                                             );
-                                          },
-                                          error: (err, s) =>
-                                              Text(err.toString()),
-                                          loading: () => Text('Loading....'))),
+                                            // EventCard();
+                                            // buildEvents(events);
+                                          } else {
+                                            // we did not recieve any data, maybe show error or no data available
+                                            return Text("Error :");
+                                          }
+                                        }),
+                                  ),
                                   CircleAvatar(
                                     child: IconButton(
                                       onPressed: () {
@@ -227,25 +254,37 @@ class Home extends ConsumerWidget {
                               Row(
                                 children: [
                                   Expanded(
-                                    child: _dataSMS.when(
-                                        data: (e) {
-                                          print("LA VALEUR DE E $e ");
-                                          return Text(
-                                            NumberFormat.compact(
-                                                    locale: 'en_US')
-                                                .format(double.tryParse('$e')),
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headlineMedium!
-                                                .copyWith(
-                                                  fontWeight: FontWeight.w800,
-                                                  color: Theme.of(context)
-                                                      .primaryColor,
-                                                ),
-                                          );
-                                        },
-                                        error: (item, error) => Text("$item"),
-                                        loading: () => Text("Loading...")),
+                                    child: FutureBuilder(
+                                        future: _dataSMS,
+                                        builder: (context, snapshot) {
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            // do something till waiting for data, we can show here a loader
+                                            return const CircularProgressIndicator();
+                                          } else if (snapshot.hasData) {
+                                            // we have the data, do stuff here
+                                            final e = snapshot.data!;
+                                            return Text(
+                                              NumberFormat.compact(
+                                                      locale: 'en_US')
+                                                  .format(
+                                                      double.tryParse('$e')),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headlineMedium!
+                                                  .copyWith(
+                                                    fontWeight: FontWeight.w800,
+                                                    color: Theme.of(context)
+                                                        .primaryColor,
+                                                  ),
+                                            );
+                                            // EventCard();
+                                            // buildEvents(events);
+                                          } else {
+                                            // we did not recieve any data, maybe show error or no data available
+                                            return Text("Error :");
+                                          }
+                                        }),
                                   ),
                                   CircleAvatar(
                                     child: IconButton(

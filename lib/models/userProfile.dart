@@ -6,7 +6,7 @@ import 'package:shapp/config/routes/routes.dart';
 import 'package:shapp/config/shared_preference/shared_preference_data.dart';
 
 class UserProfile {
-  Future<String> eventProfile() async {
+  static Future<String> eventProfile() async {
     final response = await getData(url: EVENEMENT_PROFILE);
     if (response.statusCode >= 200 && response.statusCode < 300) {
       var rep = jsonDecode(response.body);
@@ -15,7 +15,7 @@ class UserProfile {
     return "";
   }
 
-  Future<String> credit_sms() async {
+  static Future<String> credit_sms() async {
     final response = await getData(url: CREDIT_SMS_PROFILE);
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
@@ -25,7 +25,7 @@ class UserProfile {
     return "";
   }
 
-  Future<String> quantiteCredit() async {
+  static Future<String> quantiteCredit() async {
     final response = await getData(url: CREDIT_QUANTITE);
     if (response.statusCode >= 200 && response.statusCode < 300) {
       var rep = jsonDecode(response.body);

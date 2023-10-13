@@ -24,3 +24,4 @@ final ACHAT_SMS = makeUrl("credit/achat/sms/$user_id");
 final SAVE_EVENT_DATA = makeUrl("save/evenement");
 final GET_EVENT_DATA = makeUrl("evenements");
 final EVENT_PLACE = makeUrl("evenement/places/");
+final MOBILE_ALL_CREDITS = makeUrl("mobilesAllCredits");
