@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shapp/models/mobile_credit.dart';
 import 'package:shapp/models/userProfile.dart';
 import 'package:shapp/utils/utils.dart';
 import 'package:shapp/widgets/_lib.dart';
@@ -13,23 +14,21 @@ class BuyAlertMessages extends StatefulWidget {
 class _BuyAlertMessagesState extends State<BuyAlertMessages> {
   final _formKey = GlobalKey<FormState>();
 
-  final payoutMethods = [
-    {
-      "name": "Vodacom MPESA",
-      "code": "376871",
-      "code-name": "DEWIYA TECH",
-    },
-    {
-      "name": "Airtel Money",
-      "code": "098309",
-      "code-name": "DEWIYA TECH",
-    },
-    {
-      "name": "Orange Money",
-      "code": "198372",
-      "code-name": "DEWIYA TECH",
-    },
-  ];
+  late List payoutMethods = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    initializeListe();
+  }
+
+  void initializeListe() async {
+    final x = await MobileCredit.payoutMethods();
+    setState(() {
+      payoutMethods = x;
+    });
+  }
 
   Map? currentPM;
   double price = 0.0;
@@ -61,7 +60,7 @@ class _BuyAlertMessagesState extends State<BuyAlertMessages> {
                   .toList(),
               onChanged: (payout) {
                 setState(() {
-                  currentPM = payout;
+                  currentPM = payout as Map?;
                 });
               },
             ),

@@ -115,7 +115,7 @@ class Home extends ConsumerWidget {
                                       onPressed: () {
                                         Navigator.of(context).push(
                                           MaterialPageRoute(
-                                            builder: (_) => const BuyCredit(),
+                                            builder: (_) => BuyCredit(),
                                           ),
                                         );
                                       },

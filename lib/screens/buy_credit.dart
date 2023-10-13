@@ -24,7 +24,11 @@ class _BuyCreditState extends State<BuyCredit> {
   }
 
   void initializeListe() async {
-    payoutMethods = await MobileCredit.payoutMethods();
+    final x = await MobileCredit.payoutMethods();
+
+    setState(() {
+      payoutMethods = x;
+    });
   }
 
   Map? currentPM;
@@ -64,7 +68,7 @@ class _BuyCreditState extends State<BuyCredit> {
               items: payoutMethods
                   .map((e) => DropdownMenuItem(
                         value: e,
-                        child: Text('${e['name']}'),
+                        child: Text('${e['code_name']}'),
                       ))
                   .toList(),
               onChanged: (payout) {
@@ -77,8 +81,8 @@ class _BuyCreditState extends State<BuyCredit> {
               const SizedBox(height: 10.0),
               Card(
                 child: ListTile(
-                  title: Text(currentPM!['code-name']),
-                  subtitle: Text("CODE AGENT ${currentPM!['code']}"),
+                  title: Text("${currentPM!['code_name']}"),
+                  subtitle: Text("CODE AGENT :  ${currentPM!['code']}"),
                 ),
               ),
             ],

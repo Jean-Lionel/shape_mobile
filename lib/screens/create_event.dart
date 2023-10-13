@@ -5,6 +5,7 @@ import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:form_builder_file_picker/form_builder_file_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:shapp/config/config.dart';
 import 'package:shapp/config/routes/routes.dart';
 import 'package:shapp/config/shared_preference/shared_preference_data.dart';
 import 'package:shapp/utils/utils.dart';
@@ -88,30 +89,49 @@ class _CreateEventState extends State<CreateEvent> {
       }
     }
     request.fields["typeEvenement"] = "Prive"; // typeEvenement.text;
-    request.fields["nomEvenement"] = nomEvenement.text;
-    request.fields["dateEvenement"] = dateEvenement.text;
-    request.fields["heureEvenement"] = heureEvenement.text;
-    request.fields["dateFinEvenement"] = dateFinEvenement.text;
-    request.fields["heureFinEvenement"] = heureFinEvenement.text;
-    request.fields["adresseEvenement"] = adresseEvenement.text;
-    request.fields["emailResponsable"] = emailResponsable.text;
-    request.fields["numeroContact1"] = numeroContact1.text;
-    request.fields["numeroContact2"] = numeroContact2.text;
-    request.fields["places"] = places.text;
-    request.fields["autresInfos"] = autresInfos.text;
-    request.fields["file"] = file.text;
+    request.fields["nomEvenement"] = "MARIAGE DE KABONDO"; // nomEvenement.text;
+    request.fields["dateEvenement"] = "2023-10-13"; //dateEvenement.text;
+    request.fields["heureEvenement"] = "08:02"; // heureEvenement.text;
+    request.fields["dateFinEvenement"] = "2023-10-13";
+    // dateFinEvenement.text;
+    request.fields["heureFinEvenement"] = "08:02";
+    //heureFinEvenement.text;
+    request.fields["adresseEvenement"] = "BUJUMBURA - BURUNDI";
+    // adresseEvenement.text;
+    request.fields["emailResponsable"] = "nijeanlionel@gmail.com";
+    // emailResponsable.text;
+    request.fields["numeroContact1"] = "79614036";
+    // numeroContact1.text;
+    request.fields["numeroContact2"] = "614444953";
+    //numeroContact2.text;
+    request.fields["places"] = "VIP1:45";
+    // places.text;
+    request.fields["autresInfos"] = "Pas d'autres info";
+    //autresInfos.text;
+    request.fields["file"] = "";
 
     // Send the request
-    print(request.fields);
+
     print(token);
     try {
-      final streamResponse = await request.send();
-      final response = await http.Response.fromStream(streamResponse);
+      // final streamResponse = await request.send();
+      // final response = await http.Response.fromStream(streamResponse);
       print(
           "=======================RESPONSE FROM SERVER=========================================");
-      print(response.body);
+      print(jsonEncode(request.fields));
+
+      final response = await postData(
+        url: SAVE_EVENT_DATA,
+        data: request.fields,
+        contentType: "multipart/form-data",
+      );
       print(
           "=======================RESPONSE FROM SERVER=========================================");
+
+      print(response.statusCode);
+      print(
+          "=======================RESPONSE FROM SERVER=========================================");
+
       // final response = await request.send();
       // response.stream.transform(utf8.decoder).listen((value) {
       //   print(value);

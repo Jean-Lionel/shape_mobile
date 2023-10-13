@@ -50,7 +50,7 @@ class MobileCredit {
           (e) => {
             "name": e.nomAgent,
             "code": e.codeAgent,
-            "code-name": e.ssid,
+            "code_name": e.ssid,
           },
         )
         .toList();
