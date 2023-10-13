@@ -75,9 +75,11 @@ class Evenement {
 
   static Future<List<Evenement>> getEvenemts() async {
     final response = await getData(url: GET_EVENT_DATA);
-
     final List body = jsonDecode(response.body);
-
     return body.map((e) => Evenement.fromJson(e)).toList();
+  }
+
+  String get getImage {
+    return "${IP_ADDRESS}viewImageEvent/${id}";
   }
 }

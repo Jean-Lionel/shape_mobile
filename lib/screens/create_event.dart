@@ -74,16 +74,18 @@ class _CreateEventState extends State<CreateEvent> {
       "Content-Type": "application/x-www-form-urlencoded",
     });
     // Add each selected file as a part of the request
-    for (var file in _selectedFiles!) {
-      // Read the contents of the PlatformFile into Uint8List
-      Uint8List? fileBytes = await file.bytes;
-      request.files.add(
-        http.MultipartFile.fromBytes(
-          'images[]', // Field name for each file
-          fileBytes!,
-          filename: file.name,
-        ),
-      );
+    if (_selectedFiles != null) {
+      for (var file in _selectedFiles!) {
+        // Read the contents of the PlatformFile into Uint8List
+        Uint8List? fileBytes = await file.bytes;
+        request.files.add(
+          http.MultipartFile.fromBytes(
+            'images[]', // Field name for each file
+            fileBytes!,
+            filename: file.name,
+          ),
+        );
+      }
     }
     request.fields["typeEvenement"] = "Prive"; // typeEvenement.text;
     request.fields["nomEvenement"] = nomEvenement.text;
@@ -105,6 +107,11 @@ class _CreateEventState extends State<CreateEvent> {
     try {
       final streamResponse = await request.send();
       final response = await http.Response.fromStream(streamResponse);
+      print(
+          "=======================RESPONSE FROM SERVER=========================================");
+      print(response.body);
+      print(
+          "=======================RESPONSE FROM SERVER=========================================");
       // final response = await request.send();
       // response.stream.transform(utf8.decoder).listen((value) {
       //   print(value);
@@ -112,12 +119,12 @@ class _CreateEventState extends State<CreateEvent> {
       if (response.statusCode == 200) {
         // Images uploaded successfully
         final Map<String, dynamic> responseData = jsonDecode(response.body);
-       // return responseData;
+        // return responseData;
         // print('Images uploaded successfully to the API');
       } else {
         // Handle errors based on the API response
         // print('Error uploading the images to the API');
-       // return null;
+        // return null;
       }
     } catch (error) {
       print('An error occurred while uploading the images: $error');

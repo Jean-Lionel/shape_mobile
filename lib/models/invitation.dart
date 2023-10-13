@@ -9,7 +9,7 @@ class Invitation {
     final urlData = makeUrl("view/invitations/", params: idPlaces);
     final response = await getData(url: urlData);
     final List body = jsonDecode(response.body);
-    print("La listre des places ");
+    print("La liste des places ");
     print(body);
     //return body.map((e) => Invitation.fromJson(e)).toList();
   }

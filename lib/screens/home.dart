@@ -12,9 +12,9 @@ class Home extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final _dataEvent = ref.refresh(eventResult);
-    final _dataCredit = ref.refresh(quantiteCredit);
-    final _dataSMS = ref.refresh(credit_sms);
+    final _dataEvent = ref.watch(eventResult);
+    final _dataCredit = ref.watch(quantiteCredit);
+    final _dataSMS = ref.watch(credit_sms);
     return Scaffold(
       body: CustomScrollView(
         slivers: [

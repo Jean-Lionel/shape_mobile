@@ -37,9 +37,8 @@ class EventDetails extends StatelessWidget {
                   clipBehavior: Clip.hardEdge,
                   decoration: BoxDecoration(
                     color: Theme.of(context).scaffoldBackgroundColor,
-                    image: const DecorationImage(
-                      image: NetworkImage(
-                          'https://hips.hearstapps.com/hmg-prod/images/wedding-wishes-1645634516.jpg?crop=1xw:0.8429543847241867xh;center,top'),
+                    image: DecorationImage(
+                      image: NetworkImage(event.getImage),
                       fit: BoxFit.cover,
                     ),
                     borderRadius: const BorderRadius.only(

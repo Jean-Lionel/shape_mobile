@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shapp/config/routes/routes.dart';
 import 'package:shapp/models/evenement.dart';
 import 'package:shapp/screens/_lib.dart';
 import 'package:shapp/utils/utils.dart';
@@ -85,7 +86,9 @@ class EventCard extends StatelessWidget {
               ? const CircleAvatar(
                   backgroundImage: NetworkImage(
                       "https://hips.hearstapps.com/hmg-prod/images/wedding-wishes-1645634516.jpg?crop=1xw:0.8429543847241867xh;center,top"))
-              : const CircleAvatar(child: Text('E')),
+              : CircleAvatar(
+                  backgroundImage: NetworkImage(event.getImage),
+                ),
           title: Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -113,8 +116,6 @@ class EventCard extends StatelessWidget {
 }
 
 Widget buildEvents(List<Evenement> evenements) {
-  print("================================================");
-  print(evenements);
   return ListView.builder(
     itemCount: evenements.length,
     itemBuilder: (context, index) {
