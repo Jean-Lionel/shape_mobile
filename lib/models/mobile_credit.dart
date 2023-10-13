@@ -42,4 +42,18 @@ class MobileCredit {
     }
     throw new Exception("error:  ${response.statusCode} ");
   }
+
+  static Future<List> payoutMethods() async {
+    final response = await getAllCredits();
+    List body = response
+        .map(
+          (e) => {
+            "name": e.nomAgent,
+            "code": e.codeAgent,
+            "code-name": e.ssid,
+          },
+        )
+        .toList();
+    return body;
+  }
 }

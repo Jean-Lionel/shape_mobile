@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shapp/models/mobile_credit.dart';
 import 'package:shapp/models/userProfile.dart';
 import 'package:shapp/utils/utils.dart';
 import 'package:shapp/widgets/_lib.dart';
@@ -13,27 +14,21 @@ class BuyCredit extends StatefulWidget {
 class _BuyCreditState extends State<BuyCredit> {
   final _formKey = GlobalKey<FormState>();
 
-  final payoutMethods = [
-    {
-      "name": "Vodacom MPESA",
-      "code": "376871",
-      "code-name": "DEWIYA TECH",
-    },
-    {
-      "name": "Airtel Money",
-      "code": "098309",
-      "code-name": "DEWIYA TECH",
-    },
-    {
-      "name": "Orange Money",
-      "code": "198372",
-      "code-name": "DEWIYA TECH",
-    },
-  ];
+  late List payoutMethods = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    initializeListe();
+  }
+
+  void initializeListe() async {
+    payoutMethods = await MobileCredit.payoutMethods();
+  }
 
   Map? currentPM;
   double price = 0.0;
-
   TextEditingController transactionController = new TextEditingController();
 
   void saveInformations() async {
@@ -56,6 +51,7 @@ class _BuyCreditState extends State<BuyCredit> {
 
   @override
   Widget build(BuildContext context) {
+    MobileCredit.payoutMethods();
     return FormModel(
       title: 'Acheter de crédits',
       form: Form(
@@ -73,7 +69,7 @@ class _BuyCreditState extends State<BuyCredit> {
                   .toList(),
               onChanged: (payout) {
                 setState(() {
-                  currentPM = payout;
+                  currentPM = payout as Map?;
                 });
               },
             ),
