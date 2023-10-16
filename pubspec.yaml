@@ -53,7 +53,7 @@ dependencies:
   share_plus:
   syncfusion_flutter_barcodes:
   package_info_plus:
-  image_picker: 
+  image_picker: ^0.8.5
   barcode_scanner: ^3.6.0
   
 

@@ -28,8 +28,8 @@ class MyApp extends StatelessWidget {
           ? HomeScreensPageView.routeName
           : Login.routeName,
       routes: {
-        HomeScreensPageView.routeName: (_) => HomeScreensPageView(),
-        Login.routeName: (_) => Login(),
+        HomeScreensPageView.routeName: (_) => const HomeScreensPageView(),
+        Login.routeName: (_) => const Login(),
       },
     );
   }

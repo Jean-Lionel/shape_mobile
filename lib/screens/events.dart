@@ -95,7 +95,7 @@ class EventCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("${event.nomEvenement} VENT"),
+                Text("${event.nomEvenement}"),
                 Text("${event.eventTime} "),
               ],
             ),

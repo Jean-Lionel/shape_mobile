@@ -1,11 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:form_builder_file_picker/form_builder_file_picker.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:shapp/config/config.dart';
 import 'package:shapp/config/routes/routes.dart';
 import 'package:shapp/config/shared_preference/shared_preference_data.dart';
 import 'package:shapp/utils/utils.dart';
@@ -36,119 +35,90 @@ class _CreateEventState extends State<CreateEvent> {
   TextEditingController autresInfos = TextEditingController();
   TextEditingController file = TextEditingController();
 
-  final payoutMethods = [
-    {
-      "name": "Vodacom MPESA",
-      "code": "376871",
-      "code-name": "DEWIYA TECH",
-    },
-    {
-      "name": "Airtel Money",
-      "code": "098309",
-      "code-name": "DEWIYA TECH",
-    },
-    {
-      "name": "Orange Money",
-      "code": "198372",
-      "code-name": "DEWIYA TECH",
-    },
-  ];
-
   Map? currentPM;
   double price = 0.0;
   final _timeController = TextEditingController();
   final _timeEndController = TextEditingController();
-  List<PlatformFile>? _selectedFiles;
+  ImagePicker? _selectedFiles;
+
+  //Nininahazwe Jean Lionel Je suis en bonne
+
+  String convertDate(String d) {
+    //10/16/2023, => 2023-10-16
+    var myDate = d.split("/");
+
+    String curent = "${myDate[2]}-${myDate[0]}-${myDate[1]}";
+
+    return myDate.isNotEmpty ? curent : "";
+  }
 
   Future<void> saveEvent() async {
     print("==================SAVE BEGINING==================================");
-    // if (_selectedFiles == null || _selectedFiles!.isEmpty) {
-    //   // Handle the case where no images are selected
-    //   return;
-    // }
-    //try {
-    // Create a multipart request
-    final request = http.MultipartRequest('POST', SAVE_EVENT_DATA);
-    var token = UserSimplePeference.getToken();
-    request.headers.addAll({
-      "Authorization": "Bearer $token",
-      "Content-Type": "application/x-www-form-urlencoded",
-    });
-    // Add each selected file as a part of the request
-    if (_selectedFiles != null) {
-      for (var file in _selectedFiles!) {
-        // Read the contents of the PlatformFile into Uint8List
-        Uint8List? fileBytes = await file.bytes;
-        request.files.add(
-          http.MultipartFile.fromBytes(
-            'images[]', // Field name for each file
-            fileBytes!,
-            filename: file.name,
-          ),
-        );
-      }
+
+    var request = http.MultipartRequest("POST", SAVE_EVENT_DATA);
+
+    request.fields["nomEvenement"] = nomEvenement.text;
+    request.fields["dateEvenement"] = convertDate(dateEvenement.text);
+    request.fields["heureEvenement"] = _timeController.text;
+    request.fields["dateFinEvenement"] = convertDate(dateFinEvenement.text);
+    request.fields["heureFinEvenement"] = _timeEndController.text;
+    request.fields["adresseEvenement"] = adresseEvenement.text;
+    request.fields["emailResponsable"] = emailResponsable.text;
+    request.fields["numeroContact1"] = numeroContact1.text;
+    request.fields["numeroContact2"] = numeroContact2.text;
+    request.fields["typeEvenement"] = "Prive";
+    request.fields["autresInfos"] = autresInfos.text;
+
+    var places = [
+      {
+        "name": "VIPS1",
+        "nombre": 45,
+      },
+      {
+        "name": "VIPS1",
+        "nombre": 8,
+      },
+      {
+        "name": "VIP",
+        "nombre": 78,
+      },
+    ];
+    String items = "";
+    for (var place in places) {
+      items += "${place['name']}#${place['nombre']},";
     }
-    request.fields["typeEvenement"] = "Prive"; // typeEvenement.text;
-    request.fields["nomEvenement"] = "MARIAGE DE KABONDO"; // nomEvenement.text;
-    request.fields["dateEvenement"] = "2023-10-13"; //dateEvenement.text;
-    request.fields["heureEvenement"] = "08:02"; // heureEvenement.text;
-    request.fields["dateFinEvenement"] = "2023-10-13";
-    // dateFinEvenement.text;
-    request.fields["heureFinEvenement"] = "08:02";
-    //heureFinEvenement.text;
-    request.fields["adresseEvenement"] = "BUJUMBURA - BURUNDI";
-    // adresseEvenement.text;
-    request.fields["emailResponsable"] = "nijeanlionel@gmail.com";
-    // emailResponsable.text;
-    request.fields["numeroContact1"] = "79614036";
-    // numeroContact1.text;
-    request.fields["numeroContact2"] = "614444953";
-    //numeroContact2.text;
-    request.fields["places"] = "VIP1:45";
-    // places.text;
-    request.fields["autresInfos"] = "Pas d'autres info";
-    //autresInfos.text;
-    request.fields["file"] = "";
+    request.fields['places'] = items;
+    var image = null;
+    // ignore: unnecessary_null_comparison
+    if (image != null) {
+      request.files.add(http.MultipartFile(
+          'file', image.readAsBytes().asStream(), image.lengthSync()));
+    } else {
+      request.files.add(http.MultipartFile.fromString('file', 'hdhdh'));
+    }
 
-    // Send the request
-
-    print(token);
+    var token = UserSimplePeference.getToken();
+    request.headers.addAll(<String, String>{'Authorization': 'Bearer $token'});
+    print(request.fields);
     try {
-      // final streamResponse = await request.send();
-      // final response = await http.Response.fromStream(streamResponse);
+      var response = await http.Response.fromStream(await request.send());
       print(
-          "=======================RESPONSE FROM SERVER=========================================");
-      print(jsonEncode(request.fields));
-
-      final response = await postData(
-        url: SAVE_EVENT_DATA,
-        data: request.fields,
-        contentType: "multipart/form-data",
-      );
-      print(
-          "=======================RESPONSE FROM SERVER=========================================");
-
-      print(response.statusCode);
-      print(
-          "=======================RESPONSE FROM SERVER=========================================");
-
-      // final response = await request.send();
-      // response.stream.transform(utf8.decoder).listen((value) {
-      //   print(value);
-      // });
+          "=================${response.statusCode}===========================");
+      print(token);
+      print(response.body);
       if (response.statusCode == 200) {
-        // Images uploaded successfully
-        final Map<String, dynamic> responseData = jsonDecode(response.body);
-        // return responseData;
-        // print('Images uploaded successfully to the API');
+        var jsonResponse = json.decode(response.body);
+        print("Evenement créé avec succès");
+
+        print(jsonResponse);
+        print("================================================");
       } else {
-        // Handle errors based on the API response
-        // print('Error uploading the images to the API');
-        // return null;
+        // Handle error or refresh logic
       }
     } catch (error) {
-      print('An error occurred while uploading the images: $error');
+      // Handle error
     }
+
     //return null;
   }
 
@@ -183,22 +153,28 @@ class _CreateEventState extends State<CreateEvent> {
                     onShowPicker: (context, currentValue) => showDatePicker(
                       context: context,
                       initialDate: DateTime.now(),
-                      firstDate: DateTime(DateTime.now().year - 130),
-                      lastDate: DateTime.now(),
+                      firstDate: DateTime.now(),
+                      lastDate: DateTime(DateTime.now().year + 1),
                     ),
+                    validator: (value) {
+                      if (value == null) {
+                        return 'Please enter some text';
+                      }
+                      return null;
+                    },
                   ),
                 ),
                 const SizedBox(width: 10.0),
                 Expanded(
                   child: DateTimeField(
-                    controller: heureEvenement,
+                    controller: dateFinEvenement,
                     format: DateFormat.yMd(Platform.localeName),
                     decoration: defaultDecoration("Date fin"),
                     onShowPicker: (context, currentValue) => showDatePicker(
                       context: context,
                       initialDate: DateTime.now(),
-                      firstDate: DateTime(DateTime.now().year - 130),
-                      lastDate: DateTime.now(),
+                      firstDate: DateTime.now(),
+                      lastDate: DateTime(DateTime.now().year + 3),
                     ),
                   ),
                 ),
@@ -215,21 +191,23 @@ class _CreateEventState extends State<CreateEvent> {
                     onShowPicker: (context, currentValue) => showTimePicker(
                       context: context,
                       initialTime: TimeOfDay.now(),
-                    ).then((value) {
-                      if (value != null) {
-                        setState(() {
-                          _timeController.text =
-                              "${value.hour}:${value.minute}";
-                        });
-                        return DateFormat.jm()
-                            .parse(value.format(context).toString());
-                      } else {
-                        setState(() {
-                          _timeController.clear();
-                        });
-                        return DateTime.now();
-                      }
-                    }),
+                    ).then(
+                      (value) {
+                        if (value != null) {
+                          setState(() {
+                            _timeController.text =
+                                "${value.hour}:${value.minute}";
+                          });
+                          return DateFormat.jm()
+                              .parse(value.format(context).toString());
+                        } else {
+                          setState(() {
+                            _timeController.clear();
+                          });
+                          return DateTime.now();
+                        }
+                      },
+                    ),
                   ),
                 ),
                 const SizedBox(width: 10.0),
@@ -262,10 +240,16 @@ class _CreateEventState extends State<CreateEvent> {
             ),
             const SizedBox(height: 10.0),
             TextFormField(
-              controller: heureFinEvenement,
+              controller: adresseEvenement,
               keyboardType: TextInputType.phone,
               textCapitalization: TextCapitalization.words,
               decoration: defaultDecoration("Adresse de l'événement"),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter some text';
+                }
+                return null;
+              },
             ),
             const SizedBox(height: 10.0),
             TextFormField(
@@ -283,6 +267,12 @@ class _CreateEventState extends State<CreateEvent> {
                     keyboardType: TextInputType.phone,
                     textCapitalization: TextCapitalization.words,
                     decoration: defaultDecoration("Premier contact"),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter some text';
+                      }
+                      return null;
+                    },
                   ),
                 ),
                 const SizedBox(width: 10.0),
@@ -305,7 +295,7 @@ class _CreateEventState extends State<CreateEvent> {
               allowMultiple: false,
               previewImages: true,
               onChanged: (val) {
-                _selectedFiles = val;
+                _selectedFiles = null;
               },
               onSaved: (value) {},
               onFileLoading: (val) {},
