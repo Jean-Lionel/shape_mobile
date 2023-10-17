@@ -1,9 +1,8 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
-import 'package:form_builder_file_picker/form_builder_file_picker.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:shapp/config/routes/routes.dart';
 import 'package:shapp/config/shared_preference/shared_preference_data.dart';
@@ -39,8 +38,8 @@ class _CreateEventState extends State<CreateEvent> {
   double price = 0.0;
   final _timeController = TextEditingController();
   final _timeEndController = TextEditingController();
-  ImagePicker? _selectedFiles;
 
+  bool isLoading = false;
   //Nininahazwe Jean Lionel Je suis en bonne
 
   String convertDate(String d) {
@@ -52,71 +51,68 @@ class _CreateEventState extends State<CreateEvent> {
     return myDate.isNotEmpty ? curent : "";
   }
 
+  dynamic listPlaces;
+  void _findCategories(var items) {
+    setState(() {
+      listPlaces = items;
+    });
+  }
+
   Future<void> saveEvent() async {
-    print("==================SAVE BEGINING==================================");
+    if (_formKey.currentState!.validate()) {
+      setState(() {
+        isLoading = true;
+      });
+      var request = http.MultipartRequest("POST", SAVE_EVENT_DATA);
+      request.fields["nomEvenement"] = nomEvenement.text;
+      request.fields["dateEvenement"] = convertDate(dateEvenement.text);
+      request.fields["heureEvenement"] = _timeController.text;
+      request.fields["dateFinEvenement"] = convertDate(dateFinEvenement.text);
+      request.fields["heureFinEvenement"] = _timeEndController.text;
+      request.fields["adresseEvenement"] = adresseEvenement.text;
+      request.fields["emailResponsable"] = emailResponsable.text;
+      request.fields["numeroContact1"] = numeroContact1.text;
+      request.fields["numeroContact2"] = numeroContact2.text;
+      request.fields["typeEvenement"] = "Prive";
+      request.fields["autresInfos"] = autresInfos.text;
 
-    var request = http.MultipartRequest("POST", SAVE_EVENT_DATA);
-
-    request.fields["nomEvenement"] = nomEvenement.text;
-    request.fields["dateEvenement"] = convertDate(dateEvenement.text);
-    request.fields["heureEvenement"] = _timeController.text;
-    request.fields["dateFinEvenement"] = convertDate(dateFinEvenement.text);
-    request.fields["heureFinEvenement"] = _timeEndController.text;
-    request.fields["adresseEvenement"] = adresseEvenement.text;
-    request.fields["emailResponsable"] = emailResponsable.text;
-    request.fields["numeroContact1"] = numeroContact1.text;
-    request.fields["numeroContact2"] = numeroContact2.text;
-    request.fields["typeEvenement"] = "Prive";
-    request.fields["autresInfos"] = autresInfos.text;
-
-    var places = [
-      {
-        "name": "VIPS1",
-        "nombre": 45,
-      },
-      {
-        "name": "VIPS1",
-        "nombre": 8,
-      },
-      {
-        "name": "VIP",
-        "nombre": 78,
-      },
-    ];
-    String items = "";
-    for (var place in places) {
-      items += "${place['name']}#${place['nombre']},";
-    }
-    request.fields['places'] = items;
-    var image = null;
-    // ignore: unnecessary_null_comparison
-    if (image != null) {
-      request.files.add(http.MultipartFile(
-          'file', image.readAsBytes().asStream(), image.lengthSync()));
-    } else {
-      request.files.add(http.MultipartFile.fromString('file', 'hdhdh'));
-    }
-
-    var token = UserSimplePeference.getToken();
-    request.headers.addAll(<String, String>{'Authorization': 'Bearer $token'});
-    print(request.fields);
-    try {
-      var response = await http.Response.fromStream(await request.send());
-      print(
-          "=================${response.statusCode}===========================");
-      print(token);
-      print(response.body);
-      if (response.statusCode == 200) {
-        var jsonResponse = json.decode(response.body);
-        print("Evenement créé avec succès");
-
-        print(jsonResponse);
-        print("================================================");
-      } else {
-        // Handle error or refresh logic
+      String items = "";
+      for (var place in listPlaces) {
+        items += "${place['key']}#${place['value']},";
       }
-    } catch (error) {
-      // Handle error
+      print("================================================================");
+      print(items);
+      request.fields['places'] = items;
+
+      var token = UserSimplePeference.getToken();
+      request.headers
+          .addAll(<String, String>{'Authorization': 'Bearer $token'});
+
+      try {
+        var response = await http.Response.fromStream(await request.send());
+
+        print("===========${response.statusCode}===============");
+
+        if (response.statusCode >= 200 && response.statusCode < 300) {
+          var jsonResponse = json.decode(response.body);
+          print("Evenement créé avec succès");
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                content: Text('Création de l\'évenemenet avec succès Data')),
+          );
+        } else {
+          // Handle error or refresh logic
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error : ${response.body}')),
+          );
+        }
+      } catch (error) {
+        // Handle error
+      }
+      setState(() {
+        isLoading = false;
+      });
     }
 
     //return null;
@@ -287,19 +283,6 @@ class _CreateEventState extends State<CreateEvent> {
               ],
             ),
             const SizedBox(height: 10.0),
-            FormBuilderFilePicker(
-              name: "images",
-              maxFiles: 1,
-              decoration: defaultDecoration("Selectionner l'image"),
-              withData: true,
-              allowMultiple: false,
-              previewImages: true,
-              onChanged: (val) {
-                _selectedFiles = null;
-              },
-              onSaved: (value) {},
-              onFileLoading: (val) {},
-            ),
             const SizedBox(height: 10.0),
             TextFormField(
               controller: autresInfos,
@@ -307,18 +290,22 @@ class _CreateEventState extends State<CreateEvent> {
               decoration: defaultDecoration("Texte de l'invitation"),
             ),
             const SizedBox(height: 10.0),
-            const KeyValueInput(
-              //controller: places,
+            KeyValueInput(
               headers: [],
               label: "Catégories de place",
-            ),
-            const SizedBox(height: 10.0),
-            Button(
-              label: 'Enregistrer',
-              onTap: () {
-                saveEvent();
+              findValue: (e) {
+                _findCategories(e);
               },
             ),
+            const SizedBox(height: 10.0),
+            isLoading
+                ? CircularProgressIndicator()
+                : Button(
+                    label: 'Enregistrer',
+                    onTap: () {
+                      saveEvent();
+                    },
+                  ),
           ],
         ),
       ),
@@ -327,11 +314,16 @@ class _CreateEventState extends State<CreateEvent> {
 }
 
 class KeyValueInput extends StatefulWidget {
-  const KeyValueInput({Key? key, required this.headers, required this.label})
+  const KeyValueInput(
+      {Key? key,
+      required this.headers,
+      required this.label,
+      required this.findValue})
       : super(key: key);
 
   final List<Map<String, dynamic>> headers;
   final String label;
+  final Function(dynamic v) findValue;
   @override
   State<KeyValueInput> createState() => KeyValueInputState();
 }
@@ -343,6 +335,7 @@ class KeyValueInputState extends State<KeyValueInput> {
   void initState() {
     if (widget.headers.isNotEmpty) {
       headers = widget.headers;
+      widget.findValue(headers);
     }
     super.initState();
   }
@@ -378,6 +371,7 @@ class KeyValueInputState extends State<KeyValueInput> {
                       onChange: (hea) {
                         setState(() {
                           headers.fillRange(index, index + 1, hea);
+                          widget.findValue(headers);
                         });
                       },
                     ),
@@ -386,6 +380,7 @@ class KeyValueInputState extends State<KeyValueInput> {
                     onPressed: () {
                       setState(() {
                         headers.removeAt(index);
+                        widget.findValue(headers);
                       });
                     },
                     icon: const Icon(Icons.clear),
