@@ -1,15 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:shapp/models/ImageController.dart';
 import 'package:shapp/models/evenement.dart';
 import 'package:shapp/models/places.dart';
 import 'package:shapp/screens/_lib.dart';
 
-class EventDetails extends StatelessWidget {
+class EventDetails extends StatefulWidget {
   final Evenement event;
   const EventDetails(this.event, {Key? key}) : super(key: key);
+  @override
+  State<EventDetails> createState() => _EventDetailsState();
+}
+
+class _EventDetailsState extends State<EventDetails> {
+  String? currentImage;
+
+  void pickImage() async {
+    ImageController imgController = ImageController();
+    bool resp = await imgController.pickImage(widget.event.id);
+
+    if (resp) {
+      setState(() {
+        print("UPdating image ==================================");
+        currentImage = widget.event.getImage;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    Future<List<Place>> _placesListe = Place.getPlaces(event.id);
+    Future<List<Place>> _placesListe = Place.getPlaces(widget.event.id);
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -38,7 +58,8 @@ class EventDetails extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Theme.of(context).scaffoldBackgroundColor,
                     image: DecorationImage(
-                      image: NetworkImage(event.getImage),
+                      image:
+                          NetworkImage(currentImage ?? widget.event.getImage),
                       fit: BoxFit.cover,
                     ),
                     borderRadius: const BorderRadius.only(
@@ -68,7 +89,7 @@ class EventDetails extends StatelessWidget {
                                   MediaQuery.of(context).size.height * 0.25),
                           const SizedBox(height: 20.0),
                           Text(
-                            '${event.nomEvenement}',
+                            '${widget.event.nomEvenement}',
                             overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.center,
                             style: Theme.of(context)
@@ -79,6 +100,18 @@ class EventDetails extends StatelessWidget {
                                   color: Colors.white,
                                 ),
                           ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              ElevatedButton.icon(
+                                label: Text("Modifier l'image"),
+                                icon: Icon(Icons.camera),
+                                onPressed: () {
+                                  pickImage();
+                                },
+                              )
+                            ],
+                          )
                         ],
                       ),
                     ),
@@ -108,37 +141,37 @@ class EventDetails extends StatelessWidget {
                       ListTile(
                         contentPadding: EdgeInsets.all(0.0),
                         title: Text('Date'),
-                        subtitle: Text("${event.dateEvenement}"),
+                        subtitle: Text("${widget.event.dateEvenement}"),
                       ),
                       ListTile(
                         contentPadding: EdgeInsets.all(0.0),
                         title: Text('Heure'),
-                        subtitle: Text("${event.heureEvenement}'"),
+                        subtitle: Text("${widget.event.heureEvenement}'"),
                       ),
                       ListTile(
                         contentPadding: EdgeInsets.all(0.0),
                         title: Text("Adresse de l'événement"),
-                        subtitle: Text('${event.adresseEvenement}'),
+                        subtitle: Text('${widget.event.adresseEvenement}'),
                       ),
                       ListTile(
                         contentPadding: EdgeInsets.all(0.0),
                         title: Text("Email du responsable"),
-                        subtitle: Text('${event.emailResponsable}'),
+                        subtitle: Text('${widget.event.emailResponsable}'),
                       ),
                       ListTile(
                         contentPadding: EdgeInsets.all(0.0),
                         title: Text("Premier Contact"),
-                        subtitle: Text('${event.numeroContact1}'),
+                        subtitle: Text('${widget.event.numeroContact1}'),
                       ),
                       ListTile(
                         contentPadding: EdgeInsets.all(0.0),
                         title: Text("Deuxième Contact"),
-                        subtitle: Text('${event.numeroContact2}'),
+                        subtitle: Text('${widget.event.numeroContact2}'),
                       ),
                       ListTile(
                         contentPadding: EdgeInsets.all(0.0),
                         title: Text('Description'),
-                        subtitle: Text('${event.autresInfos}'),
+                        subtitle: Text('${widget.event.autresInfos}'),
                       ),
                       FutureBuilder(
                           future: _placesListe,
