@@ -65,9 +65,22 @@ class Evenement {
       data: bodyItem,
       contentType: "application/x-www-form-urlencoded",
     );
-    print("==================BODY==============================");
-    print(bodyItem);
-    print(response.statusCode);
+    return response.body;
+  }
+
+  static Future<String> updateStatus(dynamic eventId) async {
+    var item = {'etat': 1};
+
+    final curentUrl = makeUrl("invitation/statut/", params: eventId);
+    final response = await putData(
+      url: curentUrl,
+      data: item,
+      // contentType: "application/x-www-form-urlencoded",
+    );
+    print("Response");
+    print(curentUrl);
+    print(
+        "================${response.statusCode}================================");
     print(response.body);
 
     return response.body;

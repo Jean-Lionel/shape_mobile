@@ -26,3 +26,4 @@ final SAVE_EVENT_DATA = makeUrl("save/evenement");
 final GET_EVENT_DATA = makeUrl("evenements");
 final EVENT_PLACE = makeUrl("evenement/places/");
 final MOBILE_ALL_CREDITS = makeUrl("mobilesAllCredits");
+//Changer l'état de l’invitation pour signaler l'entrée

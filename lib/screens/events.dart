@@ -72,8 +72,6 @@ class EventCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        print("Click Event ");
-
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (_) => EventDetails(event),
@@ -109,7 +107,20 @@ class EventCard extends StatelessWidget {
               Text('${event.adresseEvenement} '),
             ],
           ),
-          trailing: Icon(Icons.qr_code),
+          //trailing: Icon(Icons.qr_code),
+          trailing: Column(
+            children: [
+              IconButton(
+                onPressed: () {
+                  Evenement.updateStatus(event.id);
+                },
+                icon: Icon(
+                  Icons.edit,
+                  size: 26,
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

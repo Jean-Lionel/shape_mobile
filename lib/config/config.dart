@@ -29,6 +29,29 @@ Future<http.Response> postData({
   }
 }
 
+Future<http.Response> putData({
+  var url,
+  dynamic data,
+  String contentType = "application/json",
+}) async {
+  String token = UserSimplePeference.getToken();
+  try {
+    final response = await http.put(
+      url,
+      headers: {
+        "content-type": "application/json",
+        "Accept": contentType, // "application/json",
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(data),
+    );
+    return response;
+  } catch (e) {
+    print(e);
+    throw FormatException('Expected at least 1 section');
+  }
+}
+
 Future<http.Response> getData({
   var url,
   String contentType = "application/json",
