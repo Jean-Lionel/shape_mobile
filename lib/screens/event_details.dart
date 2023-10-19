@@ -184,7 +184,8 @@ class _EventDetailsState extends State<EventDetails> {
                               // we have the data, do stuff here
                               final places = snapshot.data!;
 
-                              return displayPlaces(context, places);
+                              return displayPlaces(
+                                  context, places, widget.event);
                               // EventCard();
                               // buildEvents(events);
                             } else {
@@ -204,7 +205,7 @@ class _EventDetailsState extends State<EventDetails> {
   }
 }
 
-Widget displayPlaces(context, places) {
+Widget displayPlaces(context, places, event) {
   return Column(
     children: [
       ExpansionTile(
@@ -217,7 +218,7 @@ Widget displayPlaces(context, places) {
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                    builder: (_) => EventPlaceCategorie(places[index])),
+                    builder: (_) => EventPlaceCategorie(places[index], event)),
               );
             },
             contentPadding: const EdgeInsets.all(0.0),

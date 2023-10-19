@@ -41,4 +41,26 @@ class Place {
 
     return body.map((e) => Place.fromJson(e)).toList();
   }
+
+  static Future<List<Place>> getInvitations(var idPlace) async {
+    final urlData = makeUrl("view/invitations/", params: idPlace);
+    final response = await getData(url: urlData);
+    final List body = jsonDecode(response.body);
+
+    return body.map((e) => Place.fromJson(e)).toList();
+  }
+
+  static Future<bool> savePersonToInvitation(
+      dynamic bodyRequest, place_id, event_id) async {
+    print(bodyRequest);
+    final currentUrl = makeUrl("save/invite/", params: '$place_id/$event_id');
+
+    final response = await postData(url: currentUrl, data: bodyRequest);
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      throw Exception(response.body);
+    }
+  }
 }

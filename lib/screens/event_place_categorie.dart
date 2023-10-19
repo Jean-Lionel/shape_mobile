@@ -11,7 +11,8 @@ import 'package:syncfusion_flutter_barcodes/barcodes.dart';
 
 class EventPlaceCategorie extends StatefulWidget {
   final Place place;
-  const EventPlaceCategorie(this.place, {super.key});
+  final Evenement event;
+  const EventPlaceCategorie(this.place, this.event, {super.key});
   @override
   State<EventPlaceCategorie> createState() => _EventPlaceCategorieState();
 }
@@ -29,9 +30,9 @@ class _EventPlaceCategorieState extends State<EventPlaceCategorie> {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          const SliverAppBar(
+          SliverAppBar(
             pinned: true,
-            title: Text("Categorie 1"),
+            title: Text('${p.nomPlace as String}'),
             actions: [],
           ),
           SliverToBoxAdapter(
@@ -50,7 +51,10 @@ class _EventPlaceCategorieState extends State<EventPlaceCategorie> {
                           ? () {
                               showDialog(
                                 context: context,
-                                builder: (context) => const CreateInvitation(),
+                                builder: (context) => CreateInvitation(
+                                  place: p,
+                                  evenementId: widget.event,
+                                ),
                               ).then((value) {
                                 if (value == true) {
                                   setState(() {
@@ -114,7 +118,9 @@ class _EventPlaceCategorieState extends State<EventPlaceCategorie> {
 }
 
 class CreateInvitation extends StatefulWidget {
-  const CreateInvitation({super.key});
+  final Place place;
+  final dynamic evenementId;
+  const CreateInvitation({required this.place, this.evenementId, super.key});
 
   @override
   State<CreateInvitation> createState() => _CreateInvitationState();
@@ -122,6 +128,30 @@ class CreateInvitation extends StatefulWidget {
 
 class _CreateInvitationState extends State<CreateInvitation> {
   final _formKey = GlobalKey<FormState>();
+  TextEditingController nomController = TextEditingController();
+  TextEditingController prenomController = TextEditingController();
+  TextEditingController telephoneController = TextEditingController();
+  TextEditingController personneController = TextEditingController();
+  TextEditingController emailContoller = TextEditingController();
+
+  saveInvitation() async {
+    if (_formKey.currentState!.validate()) {
+      var bodyRequest = {
+        "prenomInvite": prenomController.text,
+        "nomInvite": nomController.text,
+        "phoneNumber": telephoneController.text,
+        "mailInvite": emailContoller.text,
+        "nombreInvites": personneController.text
+      };
+      final response = await Place.savePersonToInvitation(
+          bodyRequest, widget.place.id, widget.evenementId.id);
+      if (response) {
+        Navigator.of(context).pop(true);
+      }
+      //
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -137,43 +167,66 @@ class _CreateInvitationState extends State<CreateInvitation> {
                   children: [
                     Expanded(
                       child: TextFormField(
+                        controller: nomController,
                         keyboardType: TextInputType.name,
                         textCapitalization: TextCapitalization.words,
                         decoration: defaultDecoration("Nom"),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Nom est obligatoire';
+                          }
+                          return null;
+                        },
                       ),
                     ),
                     const SizedBox(width: 10.0),
                     Expanded(
                       child: TextFormField(
+                        controller: prenomController,
                         keyboardType: TextInputType.name,
                         textCapitalization: TextCapitalization.words,
                         decoration: defaultDecoration("Prénom"),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Prénom est obligatoire';
+                          }
+                          return null;
+                        },
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 10.0),
                 TextFormField(
+                  controller: telephoneController,
                   keyboardType: TextInputType.phone,
                   textCapitalization: TextCapitalization.words,
                   decoration: defaultDecoration("Téléphone"),
                 ),
                 const SizedBox(height: 10.0),
                 TextFormField(
+                  controller: emailContoller,
                   keyboardType: TextInputType.emailAddress,
                   decoration: defaultDecoration("Email"),
                 ),
                 const SizedBox(height: 10.0),
                 TextFormField(
+                  controller: personneController,
                   keyboardType: TextInputType.number,
                   textCapitalization: TextCapitalization.words,
                   decoration: defaultDecoration("Personnes autorisées"),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'le nombre de personne est obligatoire';
+                    }
+                    return null;
+                  },
                 ),
                 const Divider(),
                 Button(
                   label: 'Enregistrer',
                   onTap: () {
-                    Navigator.of(context).pop(true);
+                    saveInvitation();
                   },
                 ),
               ],
