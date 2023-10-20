@@ -46,6 +46,9 @@ class Place {
     final urlData = makeUrl("view/invitations/", params: idPlace);
     final response = await getData(url: urlData);
     final List body = jsonDecode(response.body);
+    print("================================");
+    print(body);
+    print("================================");
 
     return body.map((e) => Place.fromJson(e)).toList();
   }
@@ -60,6 +63,8 @@ class Place {
     if (response.statusCode == 200) {
       return true;
     } else {
+      print("============${response.statusCode}====================");
+      print("Error: ${response.body}");
       throw Exception(response.body);
     }
   }

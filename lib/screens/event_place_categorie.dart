@@ -23,8 +23,20 @@ class _EventPlaceCategorieState extends State<EventPlaceCategorie> {
   String query = '';
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    initializeInvitations();
+  }
+
+  initializeInvitations() async {
+    invitations = await Invitation.getInvitation(widget.place.id);
+  }
+
+  @override
   Widget build(BuildContext context) {
     Place p = widget.place;
+    initializeInvitations();
     Invitation.getInvitation(p.id);
     final canAdd = invitations.length < int.parse(p.nombre);
     return Scaffold(
@@ -43,7 +55,7 @@ class _EventPlaceCategorieState extends State<EventPlaceCategorie> {
                   ListTile(
                     contentPadding: const EdgeInsets.all(0.0),
                     title: Text(
-                      "${invitations.length}/10 invitations",
+                      "${invitations.length}/ ${int.parse(p.nombre)} invitations",
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                     trailing: TextButton.icon(
@@ -83,16 +95,16 @@ class _EventPlaceCategorieState extends State<EventPlaceCategorie> {
                     (e) => ListTile(
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
-                          builder: (_) => const CardDetails(),
+                          builder: (_) => CardDetails(e),
                         ));
                       },
                       contentPadding: const EdgeInsets.all(0.0),
-                      title: const Text("Famille Bagule Nestor"),
-                      subtitle: const Text("2 personnes"),
+                      title: Text(" ${e.nomInvite}  ${e.prenomInvite}"),
+                      subtitle: Text("${e.nombreInvites} personnes"),
                       leading: CircleAvatar(
                         backgroundColor: Theme.of(context).cardColor,
                         child: SfBarcodeGenerator(
-                          value: 'NXNF8_aetz',
+                          value: '${e.qrCodes}',
                           symbology: QRCode(),
                           showValue: false,
                         ),
@@ -143,11 +155,30 @@ class _CreateInvitationState extends State<CreateInvitation> {
         "mailInvite": emailContoller.text,
         "nombreInvites": personneController.text
       };
-      final response = await Place.savePersonToInvitation(
-          bodyRequest, widget.place.id, widget.evenementId.id);
-      if (response) {
-        Navigator.of(context).pop(true);
+
+      try {
+        final response = await Place.savePersonToInvitation(
+            bodyRequest, widget.place.id, widget.evenementId.id);
+        if (response) {
+          Navigator.of(context).pop(true);
+        }
+      } catch (e) {
+        final snackBar = SnackBar(
+          content: Text('${e}'),
+          action: SnackBarAction(
+            label: 'ok',
+            onPressed: () {
+              // Some code to undo the change.
+              Navigator.of(context).pop(true);
+            },
+          ),
+        );
+
+        // Find the ScaffoldMessenger in the widget tree
+        // and use it to show a SnackBar.
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
+
       //
     }
   }
