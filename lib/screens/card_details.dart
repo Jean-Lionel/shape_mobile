@@ -24,7 +24,8 @@ class CardDetails extends StatelessWidget {
                     padding: const EdgeInsets.all(12.0),
                     child: Center(
                       child: SfBarcodeGenerator(
-                        value: '${invitation.qrCodes}',
+                        value:
+                            '${invitation.nomInvite} ${invitation.prenomInvite} \n # ${invitation.qrCodes}',
                         symbology: QRCode(),
                         showValue: false,
                       ),
@@ -32,7 +33,7 @@ class CardDetails extends StatelessWidget {
                   ),
                   const Divider(),
                   Text(
-                    "${invitation.nomInvite}",
+                    "${invitation.nomInvite}  ${invitation.prenomInvite}",
                     style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                           color: Theme.of(context).textTheme.titleSmall!.color,
                         ),

@@ -42,6 +42,8 @@ class Invitation {
     final response = await getData(url: urlData);
     final List body = jsonDecode(response.body);
 
+    print("================================================================");
+    print(response.body);
     return body.map((e) => Invitation.fromJson(e)).toList();
   }
 }

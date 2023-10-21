@@ -30,14 +30,16 @@ class _EventPlaceCategorieState extends State<EventPlaceCategorie> {
   }
 
   initializeInvitations() async {
-    invitations = await Invitation.getInvitation(widget.place.id);
+    final x = await Invitation.getInvitation(widget.place.id);
+
+    setState(() {
+      invitations = x;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     Place p = widget.place;
-    initializeInvitations();
-    Invitation.getInvitation(p.id);
     final canAdd = invitations.length < int.parse(p.nombre);
     return Scaffold(
       body: CustomScrollView(

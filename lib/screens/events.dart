@@ -110,15 +110,15 @@ class EventCard extends StatelessWidget {
           //trailing: Icon(Icons.qr_code),
           trailing: Column(
             children: [
-              IconButton(
-                onPressed: () {
-                  Evenement.updateStatus(event.id);
-                },
-                icon: Icon(
-                  Icons.edit,
-                  size: 26,
-                ),
-              )
+              // IconButton(
+              //   onPressed: () {
+              //     Evenement.updateStatus(event.id);
+              //   },
+              //   icon: Icon(
+              //     Icons.edit,
+              //     size: 26,
+              //   ),
+              // )
             ],
           ),
         ),
