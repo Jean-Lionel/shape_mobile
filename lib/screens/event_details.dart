@@ -131,12 +131,12 @@ class _EventDetailsState extends State<EventDetails> {
                         onPressed: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (_) => const EventAlert(),
+                              builder: (_) => EventAlert(widget.event),
                             ),
                           );
                         },
                         icon: const Icon(Icons.sms),
-                        label: const Text('SMS/MAIL ALERT'),
+                        label: const Text('SMS ALERT'),
                       ),
                       ListTile(
                         contentPadding: EdgeInsets.all(0.0),

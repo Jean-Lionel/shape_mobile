@@ -54,17 +54,18 @@ class Place {
   }
 
   static Future<bool> savePersonToInvitation(
-      dynamic bodyRequest, place_id, event_id) async {
-    print(bodyRequest);
-    final currentUrl = makeUrl("save/invite/", params: '$place_id/$event_id');
+      dynamic bodyRequest, place_id, event_id, codeItem) async {
+    String code = "$event_id $place_id $codeItem";
+    final currentUrl = makeUrl("save/invite/", params: '$place_id/$code');
 
     final response = await postData(url: currentUrl, data: bodyRequest);
 
-    if (response.statusCode == 200) {
+    print("============${response.statusCode}====================");
+    print("Error: ${response.body}");
+
+    if (response.statusCode == 201) {
       return true;
     } else {
-      print("============${response.statusCode}====================");
-      print("Error: ${response.body}");
       throw Exception(response.body);
     }
   }

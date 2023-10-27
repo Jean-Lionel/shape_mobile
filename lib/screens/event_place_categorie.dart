@@ -31,7 +31,6 @@ class _EventPlaceCategorieState extends State<EventPlaceCategorie> {
 
   initializeInvitations() async {
     final x = await Invitation.getInvitation(widget.place.id);
-
     setState(() {
       invitations = x;
     });
@@ -68,6 +67,10 @@ class _EventPlaceCategorieState extends State<EventPlaceCategorie> {
                                 builder: (context) => CreateInvitation(
                                   place: p,
                                   evenementId: widget.event,
+                                  updateInterfaces: () {
+                                    initializeInvitations();
+                                  },
+                                  totalInvitations: invitations.length,
                                 ),
                               ).then((value) {
                                 if (value == true) {
@@ -134,7 +137,14 @@ class _EventPlaceCategorieState extends State<EventPlaceCategorie> {
 class CreateInvitation extends StatefulWidget {
   final Place place;
   final dynamic evenementId;
-  const CreateInvitation({required this.place, this.evenementId, super.key});
+  final dynamic totalInvitations;
+  final Function() updateInterfaces;
+  const CreateInvitation(
+      {required this.updateInterfaces,
+      required this.place,
+      this.evenementId,
+      this.totalInvitations,
+      super.key});
 
   @override
   State<CreateInvitation> createState() => _CreateInvitationState();
@@ -155,13 +165,14 @@ class _CreateInvitationState extends State<CreateInvitation> {
         "nomInvite": nomController.text,
         "phoneNumber": telephoneController.text,
         "mailInvite": emailContoller.text,
-        "nombreInvites": personneController.text
+        "nombreInvites": personneController.text,
       };
 
       try {
-        final response = await Place.savePersonToInvitation(
-            bodyRequest, widget.place.id, widget.evenementId.id);
+        final response = await Place.savePersonToInvitation(bodyRequest,
+            widget.place.id, widget.evenementId.id, widget.totalInvitations);
         if (response) {
+          widget.updateInterfaces();
           Navigator.of(context).pop(true);
         }
       } catch (e) {
