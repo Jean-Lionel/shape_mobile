@@ -105,7 +105,7 @@ Widget displayPlacesB(context, places, event) {
   return Column(
     children: [
       ...List.generate(
-        4,
+        places.length,
         (index) => ExpansionTile(
           title: Text(' ${places[index].nomPlace}'),
           childrenPadding: const EdgeInsets.all(0.0),
