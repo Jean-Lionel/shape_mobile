@@ -131,6 +131,16 @@ Widget displayPlacesB(context, places, event) {
               ),
             ),
             const Divider(),
+            TextField(
+              keyboardType: TextInputType.multiline,
+              maxLines: null,
+              decoration: InputDecoration(
+                hintText: 'Hint Text',
+                helperText: 'Helper Text',
+                counterText: '0 characters',
+                border: OutlineInputBorder(),
+              ),
+            ),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: DataTable(
