@@ -135,8 +135,8 @@ Widget displayPlacesB(context, places, event) {
               keyboardType: TextInputType.multiline,
               maxLines: null,
               decoration: InputDecoration(
-                hintText: 'Hint Text',
-                helperText: 'Helper Text',
+                hintText: 'Message',
+                helperText: 'Message',
                 counterText: '0 characters',
                 border: OutlineInputBorder(),
               ),
