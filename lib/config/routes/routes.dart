@@ -1,7 +1,8 @@
 import 'package:shapp/config/shared_preference/shared_preference_data.dart';
 
 //final String IP_ADDRESS = "http://shappu-v2.eu-north-1.elasticbeanstalk.com/";
-final String IP_ADDRESS = "http://192.168.154.138:8080/";
+//final String IP_ADDRESS = "http://192.168.154.138:8080/";
+final String IP_ADDRESS = "http://192.168.8.101:8080/";
 
 Uri makeUrl(String url, {dynamic params = ""}) {
   String fullUrl = '$IP_ADDRESS$url$params';
